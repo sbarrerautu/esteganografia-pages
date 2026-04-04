@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>StegChallenge - Inicio</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body data-page="index">
+  <main class="shell">
+    <section class="card">
+      <h1>Esteganografia para principiantes</h1>
+      <p class="subtitle">Presentado por Sandra Barrera y Matias Bardo</p>
+      <form id="start-form" class="stack">
+        <label for="nickname">Nickname</label>
+        <input id="nickname" name="nickname" type="text" maxlength="24" required placeholder="Ejemplo: hacker123">
+        <button type="submit">Comenzar desafio</button>
+      </form>
+      <p id="start-feedback" class="feedback" aria-live="polite"></p>
+    </section>
+  </main>
+  <script src="/static/js/game.js"></script>
+</body>
+</html>
