@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>StegChallenge - Juego</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body data-page="game">
+  <main class="shell">
+    <section class="card card-wide">
+      <header class="row row-between">
+        <div>
+          <h1>StegChallenge</h1>
+          <p class="subtitle">Resuelve niveles sin saltarte pasos.</p>
+        </div>
+        <div class="timer-wrap">
+          <p class="mini">Tiempo total</p>
+          <p id="timer">00:00</p>
+        </div>
+      </header>
+
+      <section class="progress-wrap">
+        <p id="progress-text">Nivel 1 de 5</p>
+        <div class="progress-bar" aria-hidden="true">
+          <div id="progress-fill" class="progress-fill"></div>
+        </div>
+      </section>
+
+      <article class="level-card">
+        <h2 id="level-title">Cargando nivel...</h2>
+        <p id="level-question" class="mini hidden"></p>
+        <p id="level-instruction" class="hidden"></p>
+        <p id="level-hint" class="hint hidden"></p>
+        <p id="step-progress" class="mini hidden"></p>
+
+        <div id="text-zone" class="stack hidden">
+          <label for="payload-text">Texto del reto</label>
+          <textarea id="payload-text" readonly></textarea>
+          <button id="copy-challenge-text-btn" type="button" class="hidden">Copiar texto al portapapeles</button>
+
+          <div id="level3-decoder-zone" class="stack hidden">
+            <label for="level3-custom-text">Texto para descifrar (puede ser cualquier texto)</label>
+            <textarea id="level3-custom-text" placeholder="Pega aqui un texto con posibles caracteres invisibles" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea>
+            <button id="level3-decode-btn" type="button">Descifrar texto</button>
+            <label for="level3-decode-result">Mensaje descifrado</label>
+            <input id="level3-decode-result" type="text" readonly>
+            <p id="level3-decode-warning" class="mini"></p>
+            <div id="level3-decode-debug" class="hint hidden">
+              <p><strong>Binario detectado</strong></p>
+              <textarea id="level3-binary-output" readonly></textarea>
+              <p><strong>Conversion byte a ASCII</strong></p>
+              <pre id="level3-ascii-steps"></pre>
+            </div>
+          </div>
+
+          <label for="answer-input">Tu respuesta</label>
+          <input id="answer-input" type="text" placeholder="Escribe la solucion">
+          <button id="answer-btn" type="button">Validar respuesta</button>
+        </div>
+
+        <div id="image-zone" class="stack hidden">
+          <p class="mini">Imagen de referencia del reto</p>
+          <img id="challenge-image" alt="Imagen del desafio">
+          <label for="image-input">Subir imagen para analizar</label>
+          <input id="image-input" type="file" accept=".png,.jpg,.jpeg,.bmp,image/png,image/jpeg,image/bmp">
+          <button id="upload-btn" type="button">Procesar imagen</button>
+          <p id="decoded-preview" class="mini"></p>
+        </div>
+
+        <p id="game-feedback" class="feedback" aria-live="polite"></p>
+        <div id="level3-explanation" class="hint hidden">
+          <p>El mensaje estaba oculto en caracteres invisibles Unicode.</p>
+          <p>Cada caracter representaba un bit (0 o 1).</p>
+          <p>Al agruparlos en bytes y convertirlos a ASCII se obtuvo el resultado.</p>
+        </div>
+      </article>
+
+      <footer class="row row-between">
+        <button id="next-btn" type="button" disabled>Siguiente nivel</button>
+        <button id="result-btn" type="button" class="hidden">Ver resultado final</button>
+      </footer>
+    </section>
+  </main>
+  <script src="/static/js/game.js"></script>
+</body>
+</html>
