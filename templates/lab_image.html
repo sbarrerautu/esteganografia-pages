@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Taller de Esteganografia - Laboratorio Imagen</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body data-page="lab-image" data-nav-key="lab-imagen">
+  {% include "_navbar.html" %}
+  <main class="shell">
+    <section class="card card-wide">
+      <h1>Laboratorio de Imagen LSB</h1>
+      <p class="subtitle">Analiza cualquier imagen y genera imagenes con mensaje oculto.</p>
+
+      <article class="level-card stack">
+        <h2>Analizar Imagen</h2>
+        <label for="lab-image-input">Subir imagen</label>
+        <input id="lab-image-input" type="file" accept=".png,.jpg,.jpeg,.bmp,.gif,.webp,.tif,.tiff,image/png,image/jpeg,image/bmp,image/gif,image/webp,image/tiff">
+        <button id="lab-image-analyze-btn" type="button">Analizar imagen</button>
+        <div id="lab-image-loader" class="loader hidden">
+          <span class="loader-dot"></span>
+          <span>Procesando imagen...</span>
+        </div>
+        <p id="lab-image-decoded" class="mini"></p>
+        <div id="image-analysis-box" class="hint hidden">
+          <p><strong>Resultado del analisis</strong></p>
+          <p id="analysis-summary"></p>
+          <p id="analysis-best"></p>
+          <p><strong>Paso a paso</strong></p>
+          <pre id="analysis-steps"></pre>
+          <details>
+            <summary>Ver detalle tecnico (candidatos)</summary>
+            <pre id="analysis-candidates"></pre>
+          </details>
+        </div>
+        <p id="lab-image-feedback" class="feedback" aria-live="polite"></p>
+      </article>
+
+      <article class="level-card stack">
+        <h2>Generar Imagen con Datos Ocultos</h2>
+        <label for="embed-image-input">Imagen base</label>
+        <input id="embed-image-input" type="file" accept=".png,.jpg,.jpeg,.bmp,.gif,.webp,.tif,.tiff,image/png,image/jpeg,image/bmp,image/gif,image/webp,image/tiff">
+        <label for="embed-secret-input">Mensaje a ocultar</label>
+        <input id="embed-secret-input" type="text" placeholder="Mensaje secreto">
+        <label for="embed-mode-select">Canal de ocultacion</label>
+        <select id="embed-mode-select">
+          <option value="RGB" selected>RGB combinado</option>
+          <option value="R">Solo R</option>
+          <option value="G">Solo G</option>
+          <option value="B">Solo B</option>
+        </select>
+        <button id="embed-image-btn" type="button">Generar imagen</button>
+        <div id="embed-loader" class="loader hidden">
+          <span class="loader-dot"></span>
+          <span>Generando imagen...</span>
+        </div>
+        <a id="embed-download-link" class="button-link hidden" href="#" download>Descargar imagen generada</a>
+        <p id="embed-feedback" class="feedback" aria-live="polite"></p>
+      </article>
+    </section>
+  </main>
+  <script src="/static/js/navbar.js"></script>
+  <script src="/static/js/game.js"></script>
+</body>
+</html>

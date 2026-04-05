@@ -3,10 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>StegChallenge - Nivel 3 Intro</title>
+  <title>Taller de Esteganografia - Nivel 3 Intro</title>
   <link rel="stylesheet" href="/static/css/styles.css">
 </head>
-<body data-page="level3-intro">
+<body data-page="level3-intro" data-nav-key="nivel3">
+  {% include "_navbar.html" %}
   <main class="shell">
     <section class="card">
       <h1>Que son los caracteres invisibles?</h1>
@@ -21,31 +22,8 @@
       <button id="start-level-3-btn" type="button">Comenzar Nivel 3</button>
       <p id="level3-intro-feedback" class="feedback" aria-live="polite"></p>
     </section>
-
-    <section class="card">
-      <h2>Laboratorio Unicode Invisible</h2>
-      <div class="stack">
-        <label for="lab3-visible-text">Texto visible</label>
-        <input id="lab3-visible-text" type="text" placeholder="Texto normal">
-        <label for="lab3-key-text">Clave (mensaje oculto)</label>
-        <input id="lab3-key-text" type="text" placeholder="Mensaje a ocultar">
-        <button id="lab3-encode-btn" type="button">Ocultar informacion</button>
-        <button id="lab3-copy-btn" type="button">Copiar texto oculto</button>
-        <button id="lab3-download-btn" type="button">Descargar texto .txt</button>
-        <label for="lab3-encoded-output">Texto con ocultacion</label>
-        <textarea id="lab3-encoded-output" readonly></textarea>
-        <p id="lab3-meta" class="mini"></p>
-      </div>
-      <div class="stack">
-        <label for="lab3-decode-input">Texto para descifrar</label>
-        <textarea id="lab3-decode-input"></textarea>
-        <button id="lab3-decode-btn" type="button">Descifrar</button>
-        <label for="lab3-decoded-output">Resultado</label>
-        <input id="lab3-decoded-output" type="text" readonly>
-        <p id="lab3-feedback" class="feedback" aria-live="polite"></p>
-      </div>
-    </section>
   </main>
+  <script src="/static/js/navbar.js"></script>
   <script src="/static/js/game.js"></script>
 </body>
 </html>

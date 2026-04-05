@@ -3,22 +3,34 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>StegChallenge - Inicio</title>
+  <title>Taller de Esteganografia - Inicio</title>
   <link rel="stylesheet" href="/static/css/styles.css">
 </head>
-<body data-page="index">
+<body data-page="index" data-nav-key="inicio">
+  {% include "_navbar.html" %}
   <main class="shell">
     <section class="card">
       <h1>Esteganografia para principiantes</h1>
       <p class="subtitle">Presentado por Sandra Barrera y Matias Bardo</p>
+
+      <h2>Que es la esteganografia?</h2>
+      <p>La esteganografia es una tecnica que consiste en ocultar informacion dentro de otro contenido aparentemente normal, de forma que el mensaje pase desapercibido.</p>
+      <p>A diferencia de la criptografia, que oculta el contenido del mensaje, la esteganografia oculta la existencia del mensaje.</p>
+
+      <h2>Tipos de esteganografia en texto</h2>
+      <p><strong>1. Acrostico:</strong> Consiste en usar la primera letra de cada palabra o linea para formar un mensaje oculto.</p>
+      <p><strong>2. Espacios variables:</strong> Se utilizan espacios entre palabras para codificar informacion.</p>
+      <p><strong>3. Caracteres invisibles:</strong> Se insertan caracteres Unicode invisibles para ocultar informacion.</p>
+
       <form id="start-form" class="stack">
         <label for="nickname">Nickname</label>
         <input id="nickname" name="nickname" type="text" maxlength="24" required placeholder="Ejemplo: hacker123">
-        <button type="submit">Comenzar desafio</button>
+        <button type="submit">Comenzar Nivel 1</button>
       </form>
       <p id="start-feedback" class="feedback" aria-live="polite"></p>
     </section>
   </main>
+  <script src="/static/js/navbar.js"></script>
   <script src="/static/js/game.js"></script>
 </body>
 </html>

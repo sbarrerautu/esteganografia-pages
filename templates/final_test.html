@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Taller de Esteganografia - Test Final</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body data-nav-key="test-final">
+  {% include "_navbar.html" %}
+  <main class="shell">
+    <section class="card card-wide">
+      <header class="row row-between">
+        <div>
+          <h1>Test Final Rapido</h1>
+          <p class="subtitle">10 preguntas de esteganografia (todas de opcion multiple).</p>
+        </div>
+        <div class="row">
+          <a class="button-link" href="/game">Volver al juego</a>
+        </div>
+      </header>
+
+      {% if locked %}
+      <p class="hint">Este test ya fue enviado. Las respuestas quedaron bloqueadas.</p>
+      <section class="hint">
+        <p><strong>Nickname:</strong> {{ exam_metrics.nickname }}</p>
+        <p><strong>Tiempo en test:</strong> {{ exam_metrics.exam_time }} s</p>
+        <p><strong>Tiempo total (juego + laboratorio + test):</strong> {{ exam_metrics.total_time }} s</p>
+        <p><strong>Preguntas correctas:</strong> {{ exam_metrics.correct }}</p>
+        <p><strong>Preguntas incorrectas:</strong> {{ exam_metrics.incorrect }}</p>
+      </section>
+      {% endif %}
+
+      {% if not locked %}
+      <form method="post" class="stack">
+        {% for q in questions %}
+        <article class="level-card">
+          <p><strong>{{ q.id }}. {{ q.question }}</strong></p>
+          {% for key, label in q.options.items() %}
+          <label class="mcq-option">
+            <input
+              type="radio"
+              name="q{{ q.id }}"
+              value="{{ key }}"
+              {% if exam_state.answers.get("q" ~ q.id) == key.lower() or exam_state.answers.get("q" ~ q.id) == key %}checked{% endif %}
+            >
+            <span>{{ key }}) {{ label }}</span>
+          </label>
+          {% endfor %}
+        </article>
+        {% endfor %}
+        <button type="submit">Enviar test final</button>
+      </form>
+      {% endif %}
+
+      {% if locked %}
+      <section class="card">
+        <h2>Resultado</h2>
+        {% set pct = (exam_state.score * 100) // 10 %}
+        <p><strong>Puntaje:</strong> {{ exam_state.score }}/10 ({{ pct }}%)</p>
+        <p>
+          <strong>Rendimiento:</strong>
+          {% if pct >= 90 %}Excelente{% elif pct >= 70 %}Bueno{% else %}Necesita mejorar{% endif %}
+        </p>
+        <div class="stack">
+          {% for item in review %}
+          <div class="hint">
+            <p><strong>{{ item.id }}. {{ item.question }}</strong></p>
+            {% if item.correct %}
+            <p class="feedback ok">Correcto &#10003;</p>
+            <p><strong>Por que esta correcto:</strong> {{ item.explanation }}</p>
+            {% else %}
+            <p class="feedback err">Incorrecto &#10007;</p>
+            <p><strong>Respuesta correcta:</strong> {{ item.expected }}</p>
+            <p><strong>Por que esta incorrecto:</strong> {{ item.explanation }}</p>
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
+    </section>
+  </main>
+  <script src="/static/js/navbar.js"></script>
+</body>
+</html>
+

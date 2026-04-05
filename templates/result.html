@@ -3,10 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>StegChallenge - Resultado</title>
+  <title>Taller de Esteganografia - Resultado</title>
   <link rel="stylesheet" href="/static/css/styles.css">
 </head>
-<body data-page="result">
+<body data-page="result" data-nav-key="resultado">
+  {% include "_navbar.html" %}
   <main class="shell">
     <section class="card">
       <h1>Resultado Final</h1>
@@ -22,9 +23,13 @@
         <ul id="level-times"></ul>
       </section>
       <p id="result-feedback" class="feedback" aria-live="polite"></p>
-      <a class="button-link" href="/">Jugar de nuevo</a>
+      <div class="row">
+        <a class="button-link" href="/examen-final">Ir al test final rápido</a>
+        <a class="button-link" href="/">Jugar de nuevo</a>
+      </div>
     </section>
   </main>
+  <script src="/static/js/navbar.js"></script>
   <script src="/static/js/game.js"></script>
 </body>
 </html>

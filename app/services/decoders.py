@@ -53,6 +53,9 @@ def decode_lsb(image_path):
             if char == "\x00":
                 break
             message += char
+            if message.endswith("###"):
+                message = message[:-3]
+                break
 
     return message
 
@@ -74,5 +77,8 @@ def decode_lsb_red(image_path):
             if char == "\x00":
                 break
             message += char
+            if message.endswith("###"):
+                message = message[:-3]
+                break
 
     return message

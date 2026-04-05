@@ -74,6 +74,7 @@ def get_levels():
             "id": 1,
             "title": "Nivel 1 - Espacios variables",
             "kind": "text",
+            "theory": "La esteganografia con espacios variables oculta informacion usando grupos de espacios entre palabras. Cada cantidad de espacios representa una letra.",
             "question": "la informacion es poder",
             "instruction": "Descifra el mensaje usando cantidad de espacios: 1=A, 2=B, ..., 26=Z.",
             "payload_text": "la   informacion            es poder                      oculta     clave",
@@ -84,11 +85,12 @@ def get_levels():
             "id": 2,
             "title": "Nivel 2 - Acrostico",
             "kind": "text",
+            "theory": "El acrostico oculta un mensaje usando letras del texto. Puede resolverse por lineas, palabras o posiciones especificas.",
             "question": "Extrae la primera letra de cada linea.",
             "instruction": "Toma la primera letra de cada linea para revelar el mensaje.",
             "steps": [
                 {
-                    "text": "Siempre buscamos nuevas formas de aprender\nEstudiar con atencion es clave para mejorar\nGanar experiencia requiere practica constante\nUn buen analista observa cada detalle\nReconocer patrones es fundamental en seguridad\nOtro paso mas te acerca a la solucion",
+                    "text": "Siempre buscamos nuevas formas de aprender\nEstudiar con atención es clave para mejorar\nGanar experiencia requiere práctica constante\nUn buen analista observa cada detalle\nReconocer patrones es fundamental en seguridad\nOtro paso más te acerca a la solución",
                     "expected_answer": "SEGURO",
                 },
                 {
@@ -105,16 +107,18 @@ def get_levels():
             "id": 3,
             "title": "Nivel 3 - Unicode invisible",
             "kind": "text",
+            "theory": "Los caracteres Unicode invisibles (zero-width) no se ven en pantalla, pero pueden representar bits 0/1 para ocultar mensajes.",
             "question": "",
-            "instruction": "Instrucciones:\n\nSe te mostrara un texto que parece normal, pero contiene informacion oculta.\n\nTu objetivo es:\n- Detectar que hay algo escondido\n- Analizar el contenido del texto\n- Encontrar el mensaje oculto",
+            "instruction": "Instrucciones:\n\nSe te mostrará un texto que parece normal, pero contiene información oculta.\n\nTu objetivo es:\n- Detectar que hay algo escondido\n- Analizar el contenido del texto\n- Encontrar el mensaje oculto",
             "payload_text": zw_payload,
             "expected_answer": "INTEGRIDAD",
-            "hint": "Pista:\nNo todo lo que ves es todo lo que hay.\nEl mensaje no esta en las palabras visibles.",
+            "hint": "Pista:\nNo todo lo que ves es todo lo que hay.\nEl mensaje no está en las palabras visibles.",
         },
         4: {
             "id": 4,
             "title": "Nivel 4 - Imagen LSB RGB",
             "kind": "image",
+            "theory": "LSB en RGB modifica el bit menos significativo de los canales R, G y B para ocultar informacion de forma casi imperceptible.",
             "question": "Extrae bits LSB de canales RGB.",
             "instruction": "Sube una imagen y extrae LSB de los canales RGB para obtener el mensaje.",
             "challenge_image": "/static/challenges/level4.png",
@@ -125,6 +129,7 @@ def get_levels():
             "id": 5,
             "title": "Nivel 5 - Imagen LSB Avanzado",
             "kind": "image",
+            "theory": "En este nivel avanzado se usa solo el canal rojo. Se extrae el bit R&1 de cada pixel para reconstruir el mensaje.",
             "question": "Extrae solo LSB del canal rojo.",
             "instruction": "Sube una imagen y decodifica solo desde el canal rojo.",
             "challenge_image": "/static/challenges/level5.png",
@@ -146,6 +151,11 @@ def _blank_session(nickname):
         "level_elapsed": {},
         "level_steps": {"2": 1},
         "completed": False,
+        "final_exam": {
+            "submitted": False,
+            "answers": {},
+            "score": 0,
+        },
     }
 
 
@@ -207,14 +217,12 @@ def save_attempt(
         session_data["level_elapsed"][level_key] = round(elapsed, 2)
         session_data["correct_count"] += 1
 
-    if level_id == MAX_LEVEL:
-        session_data["completed"] = True
-        return
-
-    if session_data["current_level"] == level_id:
+    if session_data["current_level"] <= level_id and level_id < MAX_LEVEL:
         next_level = level_id + 1
-        session_data["current_level"] = next_level
+        session_data["current_level"] = max(session_data["current_level"], next_level)
         session_data["level_start_times"][str(next_level)] = now
+
+    session_data["completed"] = session_data["correct_count"] >= MAX_LEVEL
 
 
 def get_state_payload(session_data):

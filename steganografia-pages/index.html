@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Esteganografia Didactica - Nivel 1</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Literata:opsz,wght@7..72,500;7..72,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="bg-shape bg-shape-1" aria-hidden="true"></div>
+  <div class="bg-shape bg-shape-2" aria-hidden="true"></div>
+
+  <header class="hero">
+    <p class="eyebrow">Demo Interactiva</p>
+    <h1>Esteganografia en Texto</h1>
+    <p class="lead">
+      Aprende como ocultar y revelar mensajes en un texto usando
+      <strong>acrosticos</strong>.
+    </p>
+  </header>
+
+  <main class="container">
+    <nav class="tabs" aria-label="Secciones">
+      <button class="tab is-active" type="button" data-view="nivel1" aria-controls="view-nivel1" aria-selected="true">
+        Nivel 1
+      </button>
+      <button class="tab" type="button" data-view="laboratorio" aria-controls="view-laboratorio" aria-selected="false">
+        Laboratorio
+      </button>
+    </nav>
+
+    <section id="view-nivel1" class="panel is-active" aria-labelledby="nivel1-title">
+      <article class="card">
+        <h2 id="nivel1-title">Nivel 1: Ocultar texto en texto (Acrostico)</h2>
+        <p class="hint">
+          Pista: toma la primera letra de cada palabra del recurso.
+        </p>
+
+        <label for="resource-text" class="label">Recurso</label>
+        <textarea id="resource-text" class="input resource" readonly>Curiosos lectores analizan viejos enigmas.</textarea>
+
+        <label for="level-answer" class="label">Escribe el mensaje escondido</label>
+        <input id="level-answer" class="input" type="text" autocomplete="off" placeholder="Ejemplo: clave">
+
+        <div class="actions">
+          <button id="check-answer-btn" class="btn btn-primary" type="button">OK</button>
+          <button id="retry-btn" class="btn btn-secondary" type="button">Reintentar</button>
+        </div>
+
+        <p id="level-feedback" class="feedback" role="status" aria-live="polite"></p>
+      </article>
+    </section>
+
+    <section id="view-laboratorio" class="panel" aria-labelledby="laboratorio-title">
+      <article class="card">
+        <h2 id="laboratorio-title">Menu de Desencriptado</h2>
+        <p class="hint">
+          Elige un metodo y prueba con tu propio recurso. En V1 solo esta habilitado
+          <strong>Acrostico</strong>.
+        </p>
+
+        <label for="method-select" class="label">Metodo</label>
+        <select id="method-select" class="input">
+          <option value="acrostic" selected>Acrostico</option>
+        </select>
+
+        <label for="lab-resource" class="label">Texto recurso</label>
+        <textarea id="lab-resource" class="input resource" placeholder="Pega aqui un texto para desencriptar..."></textarea>
+
+        <div class="actions">
+          <button id="decode-btn" class="btn btn-primary" type="button">Desencriptar</button>
+        </div>
+
+        <label for="lab-output" class="label">Resultado</label>
+        <input id="lab-output" class="input" type="text" readonly placeholder="Aqui aparecera el mensaje detectado">
+
+        <p id="lab-feedback" class="feedback" role="status" aria-live="polite"></p>
+      </article>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
