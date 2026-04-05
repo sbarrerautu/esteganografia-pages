@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Taller de Esteganografia - Introduccion</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body data-page="intro" data-nav-key="intro">
+  {% include "_navbar.html" %}
+  <main class="shell">
+    <section class="card">
+      <h1>¿Qué es la esteganografía?</h1>
+      <p>
+        La esteganografía es una técnica que consiste en ocultar información dentro de otro contenido aparentemente normal, de forma que el mensaje pase desapercibido.
+      </p>
+      <p>
+        A diferencia de la criptografía, que oculta el contenido del mensaje, la esteganografía oculta la existencia del mensaje.
+      </p>
+      <h2>Tipos de esteganografía en texto:</h2>
+      <p><strong>1. Acróstico:</strong><br>Consiste en usar la primera letra de cada palabra o línea para formar un mensaje oculto.</p>
+      <p><strong>2. Espacios variables:</strong><br>Se utilizan espacios entre palabras para codificar información.</p>
+      <p><strong>3. Caracteres invisibles:</strong><br>Se insertan caracteres Unicode invisibles para ocultar información.</p>
+      <button id="start-level-1-btn" type="button">Comenzar Nivel 1</button>
+      <p id="intro-feedback" class="feedback" aria-live="polite"></p>
+    </section>
+  </main>
+  <script src="/static/js/navbar.js"></script>
+  <script src="/static/js/game.js"></script>
+</body>
+</html>

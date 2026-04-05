@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Taller de Esteganografia - Resultado</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body data-page="result" data-nav-key="resultado">
+  {% include "_navbar.html" %}
+  <main class="shell">
+    <section class="card">
+      <h1>Resultado Final</h1>
+      <p class="subtitle">Resumen de tu desempeno en los 5 niveles.</p>
+      <dl id="result-list" class="result-list">
+        <div><dt>Nickname</dt><dd id="r-nickname">-</dd></div>
+        <div><dt>Tiempo total</dt><dd id="r-time">-</dd></div>
+        <div><dt>Puntaje</dt><dd id="r-score">-</dd></div>
+        <div><dt>Respuestas correctas</dt><dd id="r-correct">-</dd></div>
+      </dl>
+      <section>
+        <h2>Tiempos por nivel</h2>
+        <ul id="level-times"></ul>
+      </section>
+      <p id="result-feedback" class="feedback" aria-live="polite"></p>
+      <div class="row">
+        <a class="button-link" href="/examen-final">Ir al test final rápido</a>
+        <a class="button-link" href="/">Jugar de nuevo</a>
+      </div>
+    </section>
+  </main>
+  <script src="/static/js/navbar.js"></script>
+  <script src="/static/js/game.js"></script>
+</body>
+</html>
