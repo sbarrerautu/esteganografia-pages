@@ -37,14 +37,16 @@ def _extract_bitstreams(img: Image.Image) -> Dict[str, str]:
     }
 
 
-def _decode_bits_with_offset(bits: str, offset: int) -> Tuple[str, List[int]]:
+def _decode_bits_with_offset(bits: str, offset: int) -> Tuple[str, List[int], List[str]]:
     payload = bits[offset:]
     values: List[int] = []
+    byte_chunks: List[str] = []
 
     for i in range(0, len(payload), 8):
         chunk = payload[i : i + 8]
         if len(chunk) < 8:
             break
+        byte_chunks.append(chunk)
         values.append(int(chunk, 2))
 
     chars = []
@@ -55,7 +57,7 @@ def _decode_bits_with_offset(bits: str, offset: int) -> Tuple[str, List[int]]:
             chars.append(chr(value))
         else:
             chars.append(".")
-    return "".join(chars), values
+    return "".join(chars), values, byte_chunks
 
 
 def _extract_readable_sections(decoded: str) -> List[str]:
@@ -95,6 +97,14 @@ def _score_candidate(readable_sections: List[str], delimiter_message: str, base6
     return score
 
 
+def _ascii_char(value: int) -> str:
+    if value == 0:
+        return "\\0"
+    if _is_printable_ascii(value):
+        return chr(value)
+    return "."
+
+
 def analyze_lsb_image(image_path: str, preferred_channel: str = "") -> Dict:
     img = Image.open(image_path).convert("RGB")
     bitstreams = _extract_bitstreams(img)
@@ -108,7 +118,7 @@ def analyze_lsb_image(image_path: str, preferred_channel: str = "") -> Dict:
 
     for channel, bits in bitstreams.items():
         for offset in range(8):
-            decoded, values = _decode_bits_with_offset(bits, offset)
+            decoded, values, byte_chunks = _decode_bits_with_offset(bits, offset)
             readable_sections = _extract_readable_sections(decoded)
 
             delimiter_message = ""
@@ -129,11 +139,23 @@ def analyze_lsb_image(image_path: str, preferred_channel: str = "") -> Dict:
                 continue
 
             preview = "".join(ch for ch in decoded[:120] if ch != "\x00")
+            ascii_preview = []
+            for idx, value in enumerate(values[:12]):
+                ascii_preview.append(
+                    {
+                        "byte": byte_chunks[idx],
+                        "ascii_code": value,
+                        "ascii_char": _ascii_char(value),
+                    }
+                )
             candidates.append(
                 {
                     "channel": channel,
                     "offset": offset,
                     "bits_used": len(values) * 8,
+                    "bit_count": len(values) * 8,
+                    "binary_preview": "".join(byte_chunks[:12]),
+                    "ascii_preview": ascii_preview,
                     "preview": preview,
                     "readable_sections": readable_sections,
                     "delimiter_message": delimiter_message,

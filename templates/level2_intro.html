@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Taller de Esteganografia - Nivel 2 Intro</title>
-  <link rel="stylesheet" href="/static/css/styles.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css', v=asset_version) }}">
 </head>
 <body data-page="level2-intro" data-nav-key="nivel2">
   {% include "_navbar.html" %}
@@ -23,7 +23,7 @@
       <p id="level2-intro-feedback" class="feedback" aria-live="polite"></p>
     </section>
   </main>
-  <script src="/static/js/navbar.js"></script>
-  <script src="/static/js/game.js"></script>
+  <script src="{{ url_for('static', filename='js/navbar.js', v=asset_version) }}"></script>
+  <script src="{{ url_for('static', filename='js/game.js', v=asset_version) }}"></script>
 </body>
 </html>

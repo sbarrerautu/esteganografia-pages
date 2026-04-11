@@ -1,4 +1,4 @@
-(function () {
+﻿(function () {
   "use strict";
 
   const page = document.body.dataset.page;
@@ -6,6 +6,8 @@
   const state = {
     currentLevel: 1,
     maxLevel: 5,
+    nickname: "",
+    completed: false,
     currentStep: 1,
     totalSteps: 1,
     startTime: 0,
@@ -34,12 +36,98 @@
     return /[\u200B\u200C]/.test(text || "");
   }
 
+  function countInvisibleChars(text) {
+    const matches = String(text || "").match(/[\u200B\u200C]/g);
+    return matches ? matches.length : 0;
+  }
+
+  function toVisibleUnicodeText(text) {
+    return String(text || "")
+      .replace(/\u200B/g, "[U+200B]")
+      .replace(/\u200C/g, "[U+200C]");
+  }
+
+  async function copyTextPreservingUnicode(text) {
+    const raw = String(text || "");
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(raw);
+      return;
+    }
+    const temp = document.createElement("textarea");
+    temp.value = raw;
+    temp.setAttribute("readonly", "readonly");
+    temp.style.position = "fixed";
+    temp.style.left = "-9999px";
+    document.body.appendChild(temp);
+    temp.select();
+    document.execCommand("copy");
+    document.body.removeChild(temp);
+  }
+
+  async function renderLevel3SolvedExplanation() {
+    const payload = (document.getElementById("payload-text") || {}).value || "";
+    const explanation = document.getElementById("level3-explanation");
+    const binaryOut = document.getElementById("level3-solution-binary");
+    const stepsOut = document.getElementById("level3-solution-steps");
+    const unicodePlainOut = document.getElementById("level3-unicode-plain");
+    if (!payload || !explanation || !binaryOut || !stepsOut || !unicodePlainOut) return;
+
+    try {
+      const body = await fetchWithRetry(
+        "/lab/decode-zero-width",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: payload })
+        },
+        2,
+        800
+      );
+      binaryOut.value = body.binary || "";
+      const lines = (body.steps || []).map(function (s, idx) {
+        return (idx + 1) + ". " + s.byte + " -> " + s.ascii_code + " -> " + s.ascii_char;
+      });
+      stepsOut.textContent = lines.join("\n");
+      unicodePlainOut.textContent = toVisibleUnicodeText(payload);
+      explanation.classList.remove("hidden");
+    } catch (err) {
+      binaryOut.value = "";
+      stepsOut.textContent = "";
+      unicodePlainOut.textContent = toVisibleUnicodeText(payload);
+      explanation.classList.remove("hidden");
+    }
+  }
+
   async function parseResponse(response) {
     const body = await response.json().catch(() => ({}));
     if (!response.ok || body.ok === false) {
-      throw new Error(body?.error?.message || "Error inesperado");
+      if (body?.error?.message) {
+        throw new Error(body.error.message);
+      }
+      if (response.status >= 500) {
+        throw new Error("El servidor se esta iniciando. Espera unos segundos y vuelve a intentar.");
+      }
+      throw new Error("Error inesperado");
     }
     return body;
+  }
+
+  async function fetchWithRetry(url, options, retries, delayMs) {
+    let lastError = null;
+    for (let i = 0; i <= retries; i += 1) {
+      try {
+        const res = await fetch(url, options);
+        return await parseResponse(res);
+      } catch (err) {
+        lastError = err;
+        if (i < retries) {
+          await new Promise(function (resolve) {
+            setTimeout(resolve, delayMs);
+          });
+        }
+      }
+    }
+    throw lastError || new Error("No se pudo completar la solicitud.");
   }
 
   function formatSeconds(total) {
@@ -67,12 +155,28 @@
   }
 
   async function loadSessionState() {
-    const response = await fetch("/state");
-    const body = await parseResponse(response);
+    const body = await fetchWithRetry("/state", {}, 3, 1500);
+    state.nickname = body.state.nickname || "";
     state.currentLevel = body.state.current_level;
+    state.completed = !!body.state.completed;
     state.maxLevel = 5;
     startTimer(body.state.start_time);
     return body.state;
+  }
+
+  function showCompletionScreen() {
+    const levelContent = document.getElementById("level-content");
+    const completionBox = document.getElementById("completion-box");
+    const completionMeta = document.getElementById("completion-meta");
+    const nextBtn = document.getElementById("next-btn");
+    if (levelContent) levelContent.classList.add("hidden");
+    if (completionBox) completionBox.classList.remove("hidden");
+    if (nextBtn) nextBtn.classList.add("hidden");
+    if (completionMeta) {
+      const timerText = (document.getElementById("timer") || {}).textContent || "00:00";
+      const nick = state.nickname || "Participante";
+      completionMeta.textContent = nick + " - Tiempo total: " + timerText;
+    }
   }
 
   function updateProgress(level) {
@@ -94,8 +198,7 @@
 
   async function loadLevel(level) {
     const feedback = document.getElementById("game-feedback");
-    const response = await fetch("/level/" + level);
-    const body = await parseResponse(response);
+    const body = await fetchWithRetry("/level/" + level, {}, 2, 1200);
     const levelData = body.level;
 
     state.currentLevel = body.current_level;
@@ -113,19 +216,21 @@
     document.getElementById("level-title").textContent = dynamicTitle;
     const theoryEl = document.getElementById("level-theory");
     if (theoryEl) {
-      if (levelData.theory) {
-        theoryEl.textContent = levelData.theory;
-        theoryEl.classList.remove("hidden");
-      } else {
-        theoryEl.textContent = "";
-        theoryEl.classList.add("hidden");
-      }
+      // Sin spoilers: ocultamos el bloque teorico durante los retos.
+      theoryEl.textContent = "";
+      theoryEl.classList.add("hidden");
     }
     const questionEl = document.getElementById("level-question");
     const instructionEl = document.getElementById("level-instruction");
     const hintEl = document.getElementById("level-hint");
     const level3Explanation = document.getElementById("level3-explanation");
     level3Explanation.classList.add("hidden");
+    const level3SolutionBinary = document.getElementById("level3-solution-binary");
+    const level3SolutionSteps = document.getElementById("level3-solution-steps");
+    const level3UnicodePlain = document.getElementById("level3-unicode-plain");
+    if (level3SolutionBinary) level3SolutionBinary.value = "";
+    if (level3SolutionSteps) level3SolutionSteps.textContent = "";
+    if (level3UnicodePlain) level3UnicodePlain.textContent = "";
 
     if (levelData.id === 1 || levelData.id === 2) {
       questionEl.classList.add("hidden");
@@ -160,18 +265,23 @@
 
     const nextBtn = document.getElementById("next-btn");
     const prevBtn = document.getElementById("prev-btn");
-    const resultBtn = document.getElementById("result-btn");
     if (nextBtn) {
       nextBtn.disabled = true;
       nextBtn.classList.add("hidden");
+      nextBtn.textContent = "Siguiente nivel";
     }
     if (prevBtn) prevBtn.disabled = levelData.id <= 1;
-    if (resultBtn) resultBtn.classList.add("hidden");
+
+    const completionBox = document.getElementById("completion-box");
+    const levelContent = document.getElementById("level-content");
+    if (completionBox) completionBox.classList.add("hidden");
+    if (levelContent) levelContent.classList.remove("hidden");
 
     const textZone = document.getElementById("text-zone");
     const imageZone = document.getElementById("image-zone");
     const decodedPreview = document.getElementById("decoded-preview");
     const copyChallengeBtn = document.getElementById("copy-challenge-text-btn");
+    const copyChallengeFeedback = document.getElementById("copy-challenge-feedback");
     const level3DecoderZone = document.getElementById("level3-decoder-zone");
     const level4Info = document.getElementById("level4-info");
     const level5Info = document.getElementById("level5-info");
@@ -190,17 +300,21 @@
         if (copyChallengeBtn) copyChallengeBtn.classList.remove("hidden");
         if (level3DecoderZone) level3DecoderZone.classList.remove("hidden");
         const custom = document.getElementById("level3-custom-text");
+        const decodeFeedback = document.getElementById("level3-decode-feedback");
         const result = document.getElementById("level3-decode-result");
         const debugBox = document.getElementById("level3-decode-debug");
         const binaryOut = document.getElementById("level3-binary-output");
         const asciiSteps = document.getElementById("level3-ascii-steps");
-        if (custom) custom.value = levelData.payload_text;
+        if (custom) custom.value = "";
+        if (copyChallengeFeedback) copyChallengeFeedback.textContent = "";
+        setFeedback(decodeFeedback, "", null);
         if (result) result.value = "";
         if (debugBox) debugBox.classList.add("hidden");
         if (binaryOut) binaryOut.value = "";
         if (asciiSteps) asciiSteps.textContent = "";
       } else {
         if (copyChallengeBtn) copyChallengeBtn.classList.add("hidden");
+        if (copyChallengeFeedback) copyChallengeFeedback.textContent = "";
         if (level3DecoderZone) level3DecoderZone.classList.add("hidden");
       }
       document.getElementById("answer-input").value = "";
@@ -222,8 +336,8 @@
       textZone.classList.add("hidden");
       if (copyChallengeBtn) copyChallengeBtn.classList.add("hidden");
       if (level3DecoderZone) level3DecoderZone.classList.add("hidden");
-      if (level4Info) level4Info.classList.toggle("hidden", levelData.id !== 4);
-      if (level5Info) level5Info.classList.toggle("hidden", levelData.id !== 5);
+      if (level4Info) level4Info.classList.add("hidden");
+      if (level5Info) level5Info.classList.add("hidden");
       if (level4Switch) level4Switch.classList.toggle("hidden", levelData.id !== 4);
       if (levelData.id === 4) {
         setLevel4Mode("reto");
@@ -280,6 +394,7 @@
         })
       });
       const body = await parseResponse(response);
+      state.completed = !!body.completed;
       const withExpected = state.currentLevel === 1 || state.currentLevel === 2 || state.currentLevel === 3;
       if (body.correct) {
         const feedbackText = withExpected && body.expected_answer
@@ -306,10 +421,12 @@
         unlockNavigation(body.completed);
       } else {
         setFeedback(feedback, "Incorrecto. Intenta nuevamente.", "err");
+        const answerBtn = document.getElementById("answer-btn");
+        if (answerBtn) answerBtn.disabled = false;
       }
 
-      if (state.currentLevel === 3) {
-        document.getElementById("level3-explanation").classList.remove("hidden");
+      if (state.currentLevel === 3 && body.correct) {
+        await renderLevel3SolvedExplanation();
       }
     } catch (err) {
       setFeedback(feedback, err.message, "err");
@@ -349,6 +466,7 @@
         body: formData
       });
       const body = await parseResponse(response);
+      state.completed = !!body.completed;
       let messageToShow = body.decoded_message || "";
       if (state.currentLevel === 4 && body.analysis && body.analysis.best_guess) {
         const best = body.analysis.best_guess;
@@ -361,9 +479,6 @@
         messageToShow = messageToShow.slice(0, 160) + "...";
       }
       decodedPreview.textContent = "Mensaje extraido: " + messageToShow;
-      if (answerInput && body.decoded_message) {
-        answerInput.value = body.decoded_message;
-      }
       renderImageAnalysis(body.analysis);
       if (body.correct) {
         setFeedback(feedback, body.feedback, "ok");
@@ -408,6 +523,7 @@
         })
       });
       const body = await parseResponse(response);
+      state.completed = !!body.completed;
       if (body.correct) {
         setFeedback(feedback, body.feedback, "ok");
         state.solvedCurrent = true;
@@ -471,13 +587,19 @@
       const sections = (c.readable_sections || []).join(" | ");
       const extra = c.delimiter_message ? (" | Delimitador: " + c.delimiter_message) : "";
       const b64 = c.base64_decoded ? (" | Base64: " + c.base64_decoded) : "";
+      const transform = (c.ascii_preview || []).map(function (s, i) {
+        return (i + 1) + ". " + s.byte + " -> " + s.ascii_code + " -> " + s.ascii_char;
+      }).join("\n");
       return (
         "[" + (idx + 1) + "] canal=" + c.channel +
         " offset=" + c.offset +
         " score=" + c.score +
+        " bits=" + (c.bit_count || c.bits_used || 0) +
         "\npreview: " + (c.preview || "") +
         (sections ? ("\nlegible: " + sections) : "") +
-        extra + b64
+        extra + b64 +
+        (c.binary_preview ? ("\nbinario (preview): " + c.binary_preview) : "") +
+        (transform ? ("\ntransformacion byte->ASCII:\n" + transform) : "")
       );
     });
     candidatesEl.textContent = [
@@ -491,13 +613,15 @@
 
   function unlockNavigation(completed) {
     const nextBtn = document.getElementById("next-btn");
-    const resultBtn = document.getElementById("result-btn");
-    if (!nextBtn || !resultBtn) return;
+    if (!nextBtn) return;
+    state.completed = !!completed;
     if (completed || state.currentLevel === state.maxLevel) {
-      nextBtn.classList.add("hidden");
-      resultBtn.classList.remove("hidden");
+      nextBtn.textContent = "Finalizar taller";
+      nextBtn.classList.remove("hidden");
+      nextBtn.disabled = false;
       return;
     }
+    nextBtn.textContent = "Siguiente nivel";
     nextBtn.classList.remove("hidden");
     nextBtn.disabled = false;
   }
@@ -511,7 +635,7 @@
       event.preventDefault();
       const nickname = document.getElementById("nickname").value.trim();
       if (!nickname) {
-        setFeedback(feedback, "Ingresa un nickname valido.", "err");
+        setFeedback(feedback, "Ingresa un nickname válido.", "err");
         return;
       }
 
@@ -570,6 +694,13 @@
     const meta = document.getElementById("lab3-meta");
     if (!encodeBtn || !decodeBtn) return;
 
+    function setLab3ExportEnabled(enabled) {
+      if (copyBtn) copyBtn.disabled = !enabled;
+      if (downloadBtn) downloadBtn.disabled = !enabled;
+    }
+
+    setLab3ExportEnabled(false);
+
     encodeBtn.addEventListener("click", function () {
       const visible = document.getElementById("lab3-visible-text").value || "";
       const key = document.getElementById("lab3-key-text").value || "";
@@ -581,13 +712,32 @@
         .then(parseResponse)
         .then(function (body) {
           const encodedText = body.encoded_text || "";
-          document.getElementById("lab3-encoded-output").value = encodedText;
-          document.getElementById("lab3-decode-input").value = encodedText;
+          const isValid = body.validation === "VALID";
+          if (isValid) {
+            document.getElementById("lab3-encoded-output").value = encodedText;
+            document.getElementById("lab3-decode-input").value = encodedText;
+            setLab3ExportEnabled(true);
+          } else {
+            document.getElementById("lab3-encoded-output").value = "";
+            setLab3ExportEnabled(false);
+          }
           const zwCount = (body.bits || "").length;
-          meta.textContent = "Caracteres invisibles incluidos: " + zwCount + " | Estado: " + (body.validation || "N/A");
-          setFeedback(labFeedback, "Información oculta en el texto generado.", "ok");
+          const statusText = body.validation_message || body.validation || "N/A";
+          const adviceText = body.advice ? (" | " + body.advice) : "";
+          meta.textContent = "Caracteres invisibles incluidos: " + zwCount + " | Estado: " + statusText + adviceText;
+          if (isValid) {
+            setFeedback(labFeedback, "Información oculta en el texto generado.", "ok");
+          } else {
+            setFeedback(
+              labFeedback,
+              "No se pudo generar un texto oculto válido. Ajusta el texto visible o el mensaje y vuelve a intentar.",
+              "err"
+            );
+          }
         })
         .catch(function (err) {
+          document.getElementById("lab3-encoded-output").value = "";
+          setLab3ExportEnabled(false);
           setFeedback(labFeedback, err.message, "err");
         });
     });
@@ -605,13 +755,18 @@
         .then(function (body) {
           const decoded = body.validation === "VALID" ? (body.decoded_message || "") : "";
           document.getElementById("lab3-decoded-output").value = decoded;
-          meta.textContent = "Estado: " + (body.validation || "N/A") + " | Bits detectados: " + ((body.bits || "").length);
+          const statusText = body.validation_message || body.validation || "N/A";
+          meta.textContent = "Estado: " + statusText + " | Bits detectados: " + ((body.bits || "").length);
           if (decoded) {
+            const encodedCurrent = document.getElementById("lab3-encoded-output").value || "";
+            setLab3ExportEnabled(!!encodedCurrent);
             setFeedback(labFeedback, "Texto descifrado correctamente.", "ok");
           } else {
+            document.getElementById("lab3-encoded-output").value = "";
+            setLab3ExportEnabled(false);
             setFeedback(
               labFeedback,
-              "No se detectaron caracteres invisibles decodificables en el texto ingresado.",
+              "Descifrado inválido: no se detectaron datos ocultos válidos.",
               "err"
             );
           }
@@ -710,18 +865,17 @@
       copyChallengeBtn.addEventListener("click", async function () {
         const payload = (document.getElementById("payload-text") || {}).value || "";
         try {
-          await navigator.clipboard.writeText(payload);
-          setFeedback(
-            document.getElementById("game-feedback"),
-            "Texto del reto copiado. Si una app elimina invisibles, usa un editor que respete Unicode.",
-            "ok"
-          );
+          await copyTextPreservingUnicode(payload);
+          const invisibleCount = countInvisibleChars(payload);
+          if (copyChallengeFeedback) {
+            copyChallengeFeedback.textContent =
+              "Texto copiado con " + invisibleCount + " caracteres Unicode invisibles.";
+          }
         } catch (err) {
-          setFeedback(
-            document.getElementById("game-feedback"),
-            "No se pudo copiar automáticamente. Selecciona y copia el texto manualmente.",
-            "err"
-          );
+          if (copyChallengeFeedback) {
+            copyChallengeFeedback.textContent =
+              "No se pudo copiar automáticamente. Selecciona y copia el texto manualmente.";
+          }
         }
       });
     }
@@ -730,16 +884,25 @@
     if (decodeBtn) {
       decodeBtn.addEventListener("click", function () {
         const customText = (document.getElementById("level3-custom-text") || {}).value || "";
-        const challengeText = (document.getElementById("payload-text") || {}).value || "";
-        const sourceText = hasInvisibleChars(customText) ? customText : challengeText;
+        const sourceText = customText;
         const warningEl = document.getElementById("level3-decode-warning");
+        const decodeFeedback = document.getElementById("level3-decode-feedback");
         const resultEl = document.getElementById("level3-decode-result");
         const debugBox = document.getElementById("level3-decode-debug");
         const binaryOut = document.getElementById("level3-binary-output");
         const asciiSteps = document.getElementById("level3-ascii-steps");
         if (warningEl) warningEl.textContent = "";
+        setFeedback(decodeFeedback, "", null);
+        if (!sourceText.trim()) {
+          if (resultEl) resultEl.value = "";
+          if (binaryOut) binaryOut.value = "";
+          if (asciiSteps) asciiSteps.textContent = "";
+          if (debugBox) debugBox.classList.add("hidden");
+          setFeedback(decodeFeedback, "Debes pegar o escribir un texto para descifrar.", "err");
+          return;
+        }
         if (warningEl && !hasInvisibleChars(customText)) {
-          warningEl.textContent = "No se detectaron invisibles en el texto pegado. Se usó el texto del reto.";
+          warningEl.textContent = "No se detectaron caracteres invisibles en el texto ingresado.";
         }
         fetch("/lab/decode-zero-width", {
           method: "POST",
@@ -762,18 +925,14 @@
             }
             if (decoded) {
               if (debugBox) debugBox.classList.remove("hidden");
-              setFeedback(document.getElementById("game-feedback"), "Texto descifrado correctamente.", "ok");
+              setFeedback(decodeFeedback, "Texto descifrado correctamente.", "ok");
             } else {
               if (debugBox) debugBox.classList.add("hidden");
-              setFeedback(
-                document.getElementById("game-feedback"),
-                body.message || "No se detectaron caracteres invisibles ocultos en el texto.",
-                "err"
-              );
+              setFeedback(decodeFeedback, body.message || "No se detectaron caracteres invisibles ocultos en el texto.", "err");
             }
           })
           .catch(function (err) {
-            setFeedback(document.getElementById("game-feedback"), err.message, "err");
+            setFeedback(decodeFeedback, err.message, "err");
           });
       });
     }
@@ -830,15 +989,12 @@
     const nextBtn = document.getElementById("next-btn");
     if (nextBtn) {
       nextBtn.addEventListener("click", function () {
+        if (state.currentLevel >= state.maxLevel || state.completed) {
+          showCompletionScreen();
+          return;
+        }
         const next = Math.min(5, state.currentLevel + 1);
         window.location.href = "/game?level=" + next;
-      });
-    }
-
-    const resultBtn = document.getElementById("result-btn");
-    if (resultBtn) {
-      resultBtn.addEventListener("click", function () {
-        window.location.href = "/resultado";
       });
     }
   }
@@ -870,7 +1026,7 @@
           decodedEl.textContent = "Canal RGB: " + clampText(rgb, 80) + " | Canal R: " + clampText(red, 80);
         }
         renderImageAnalysis(body.analysis);
-        setFeedback(feedbackEl, "Analisis completado.", "ok");
+        setFeedback(feedbackEl, "Análisis completado.", "ok");
       } catch (err) {
         setFeedback(feedbackEl, err.message, "err");
       } finally {

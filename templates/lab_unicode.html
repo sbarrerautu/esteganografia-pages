@@ -3,24 +3,24 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Taller de Esteganografia - Laboratorio Unicode</title>
-  <link rel="stylesheet" href="/static/css/styles.css">
+  <title>Taller de Esteganografía - Laboratorio Unicode</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css', v=asset_version) }}">
 </head>
 <body data-page="lab-unicode" data-nav-key="lab-unicode">
   {% include "_navbar.html" %}
   <main class="shell">
     <section class="card">
       <h1>Laboratorio Unicode Invisible</h1>
-      <p class="subtitle">Practica cifrado y descifrado con caracteres invisibles (zero-width).</p>
+      <p class="subtitle">Práctica de cifrado y descifrado con caracteres invisibles (zero-width).</p>
       <div class="stack">
         <label for="lab3-visible-text">Texto visible</label>
         <input id="lab3-visible-text" type="text" placeholder="Texto normal">
         <label for="lab3-key-text">Mensaje oculto</label>
         <input id="lab3-key-text" type="text" placeholder="Clave o mensaje">
-        <button id="lab3-encode-btn" type="button">Ocultar informacion</button>
-        <button id="lab3-copy-btn" type="button">Copiar texto oculto</button>
-        <button id="lab3-download-btn" type="button">Descargar texto .txt</button>
-        <label for="lab3-encoded-output">Texto con ocultacion</label>
+        <button id="lab3-encode-btn" type="button">Ocultar información</button>
+        <button id="lab3-copy-btn" type="button" disabled>Copiar texto oculto</button>
+        <button id="lab3-download-btn" type="button" disabled>Descargar texto .txt</button>
+        <label for="lab3-encoded-output">Texto con ocultación</label>
         <textarea id="lab3-encoded-output" readonly></textarea>
         <p id="lab3-meta" class="mini"></p>
       </div>
@@ -34,7 +34,7 @@
       </div>
     </section>
   </main>
-  <script src="/static/js/navbar.js"></script>
-  <script src="/static/js/game.js"></script>
+  <script src="{{ url_for('static', filename='js/navbar.js', v=asset_version) }}"></script>
+  <script src="{{ url_for('static', filename='js/game.js', v=asset_version) }}"></script>
 </body>
 </html>

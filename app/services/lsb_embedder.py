@@ -1,4 +1,4 @@
-from PIL import Image
+﻿from PIL import Image
 
 
 def _to_bits(payload: bytes) -> str:

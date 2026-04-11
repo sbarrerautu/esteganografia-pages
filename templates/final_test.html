@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Taller de Esteganografia - Test Final</title>
-  <link rel="stylesheet" href="/static/css/styles.css">
+  <title>Taller de Esteganografía - Test Final</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css', v=asset_version) }}">
 </head>
 <body data-nav-key="test-final">
   {% include "_navbar.html" %}
@@ -12,8 +12,8 @@
     <section class="card card-wide">
       <header class="row row-between">
         <div>
-          <h1>Test Final Rapido</h1>
-          <p class="subtitle">10 preguntas de esteganografia (todas de opcion multiple).</p>
+          <h1>Test Final Rápido</h1>
+          <p class="subtitle">10 preguntas de esteganografía (todas de opción múltiple).</p>
         </div>
         <div class="row">
           <a class="button-link" href="/game">Volver al juego</a>
@@ -25,7 +25,6 @@
       <section class="hint">
         <p><strong>Nickname:</strong> {{ exam_metrics.nickname }}</p>
         <p><strong>Tiempo en test:</strong> {{ exam_metrics.exam_time }} s</p>
-        <p><strong>Tiempo total (juego + laboratorio + test):</strong> {{ exam_metrics.total_time }} s</p>
         <p><strong>Preguntas correctas:</strong> {{ exam_metrics.correct }}</p>
         <p><strong>Preguntas incorrectas:</strong> {{ exam_metrics.incorrect }}</p>
       </section>
@@ -68,11 +67,11 @@
             <p><strong>{{ item.id }}. {{ item.question }}</strong></p>
             {% if item.correct %}
             <p class="feedback ok">Correcto &#10003;</p>
-            <p><strong>Por que esta correcto:</strong> {{ item.explanation }}</p>
+            <p><strong>Por qué está correcto:</strong> {{ item.explanation }}</p>
             {% else %}
             <p class="feedback err">Incorrecto &#10007;</p>
             <p><strong>Respuesta correcta:</strong> {{ item.expected }}</p>
-            <p><strong>Por que esta incorrecto:</strong> {{ item.explanation }}</p>
+            <p><strong>Por qué está incorrecto:</strong> {{ item.explanation }}</p>
             {% endif %}
           </div>
           {% endfor %}
@@ -81,7 +80,7 @@
       {% endif %}
     </section>
   </main>
-  <script src="/static/js/navbar.js"></script>
+  <script src="{{ url_for('static', filename='js/navbar.js', v=asset_version) }}"></script>
 </body>
 </html>
 

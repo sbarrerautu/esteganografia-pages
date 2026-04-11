@@ -1,4 +1,4 @@
-import os
+﻿import os
 import threading
 import time
 import uuid
@@ -74,10 +74,10 @@ def get_levels():
             "id": 1,
             "title": "Nivel 1 - Espacios variables",
             "kind": "text",
-            "theory": "La esteganografia con espacios variables oculta informacion usando grupos de espacios entre palabras. Cada cantidad de espacios representa una letra.",
-            "question": "la informacion es poder",
+            "theory": "La esteganografía con espacios variables oculta información usando grupos de espacios entre palabras. Cada cantidad de espacios representa una letra.",
+            "question": "la información es poder",
             "instruction": "Descifra el mensaje usando cantidad de espacios: 1=A, 2=B, ..., 26=Z.",
-            "payload_text": "la   informacion            es poder                      oculta     clave",
+            "payload_text": "la   información            es poder                      oculta     clave",
             "expected_answer": "CLAVE",
             "hint": "Cuenta solo grupos de espacios entre palabras.",
         },
@@ -94,14 +94,14 @@ def get_levels():
                     "expected_answer": "SEGURO",
                 },
                 {
-                    "text": "Dado que la informacion viene A nuestras vidas, Toda la info puede cambiar con el tiempo, Oculta detalles que pocos notan, Su pasado siempre deja pistas.",
+                    "text": "Dado que la información viene A nuestras vidas, Toda la info puede cambiar con el tiempo, Oculta detalles que pocos notan, Su pasado siempre deja pistas.",
                     "decoder": "indexed_letters",
                     "positions": [1, 2, 31, 41, 86],
                     "expected_answer": "DATOS",
                 },
             ],
             "expected_answer": "DATOS",
-            "hint": "Solo importa la primera letra de cada linea no vacia.",
+            "hint": "Solo importa la primera letra de cada linea no vacía.",
         },
         3: {
             "id": 3,
@@ -118,7 +118,7 @@ def get_levels():
             "id": 4,
             "title": "Nivel 4 - Imagen LSB RGB",
             "kind": "image",
-            "theory": "LSB en RGB modifica el bit menos significativo de los canales R, G y B para ocultar informacion de forma casi imperceptible.",
+            "theory": "LSB en RGB modifica el bit menos significativo de los canales R, G y B para ocultar información de forma casi imperceptible.",
             "question": "Extrae bits LSB de canales RGB.",
             "instruction": "Sube una imagen y extrae LSB de los canales RGB para obtener el mensaje.",
             "challenge_image": "/static/challenges/level4.png",

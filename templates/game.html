@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Taller de Esteganografia - Juego</title>
-  <link rel="stylesheet" href="/static/css/styles.css">
+  <title>Taller de Esteganografía - Juego</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css', v=asset_version) }}">
 </head>
 <body data-page="game" data-nav-key="game">
   {% include "_navbar.html" %}
@@ -12,8 +12,8 @@
     <section class="card card-wide">
       <header class="row row-between">
         <div>
-          <h1>Taller de Esteganografia</h1>
-          <p class="subtitle">Resuelve niveles progresivos de esteganografia.</p>
+          <h1>Taller de Esteganografía</h1>
+          <p class="subtitle">Resuelve niveles progresivos de esteganografía.</p>
         </div>
         <div class="timer-wrap">
           <p class="mini">Tiempo total</p>
@@ -28,7 +28,7 @@
         </div>
       </section>
 
-      <article class="level-card">
+      <article id="level-content" class="level-card">
         <h2 id="level-title">Cargando nivel...</h2>
         <div id="level-theory" class="hint hidden"></div>
         <p id="level-question" class="mini hidden"></p>
@@ -40,11 +40,13 @@
           <label for="payload-text">Texto del reto</label>
           <textarea id="payload-text" readonly></textarea>
           <button id="copy-challenge-text-btn" type="button" class="hidden">Copiar texto al portapapeles</button>
+          <p id="copy-challenge-feedback" class="mini"></p>
 
           <div id="level3-decoder-zone" class="stack hidden">
             <label for="level3-custom-text">Texto para descifrar (puede ser cualquier texto)</label>
             <textarea id="level3-custom-text" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea>
             <button id="level3-decode-btn" type="button">Descifrar texto</button>
+            <p id="level3-decode-feedback" class="feedback" aria-live="polite"></p>
             <label for="level3-decode-result">Mensaje descifrado</label>
             <input id="level3-decode-result" type="text" readonly>
             <p id="level3-decode-warning" class="mini"></p>
@@ -57,24 +59,24 @@
           </div>
 
           <label for="answer-input">Tu respuesta</label>
-          <input id="answer-input" type="text" placeholder="Escribe la solucion">
+          <input id="answer-input" type="text" placeholder="Escribe la solución">
           <button id="answer-btn" type="button">Validar respuesta</button>
         </div>
 
         <div id="image-zone" class="stack hidden">
           <div id="level4-reto-block" class="stack">
             <div id="level4-info" class="hint hidden">
-              <p><strong>Teoria LSB RGB</strong></p>
-              <p>La esteganografia LSB oculta informacion modificando el bit menos significativo de cada canal RGB.</p>
+              <p><strong>Teoría LSB RGB</strong></p>
+              <p>La esteganografía LSB oculta información modificando el bit menos significativo de cada canal RGB.</p>
             </div>
             <div id="level5-info" class="hint hidden">
-              <p><strong>Teoria LSB avanzada (solo canal rojo)</strong></p>
+              <p><strong>Teoría LSB avanzada (solo canal rojo)</strong></p>
               <p>En este nivel el mensaje oculto se guarda solo en el canal Rojo (R).</p>
             </div>
             <div class="split-panels">
               <section class="panel-card">
                 <p class="mini panel-title">Referencia del reto</p>
-                <img id="challenge-image" alt="Imagen del desafio">
+                <img id="challenge-image" alt="Imagen del desafío">
               </section>
               <section class="panel-card">
                 <p class="mini panel-title">Analiza tu imagen del reto</p>
@@ -83,13 +85,13 @@
                 <button id="upload-btn" type="button">Procesar imagen</button>
                 <p id="decoded-preview" class="mini"></p>
                 <div id="image-analysis-box" class="hint hidden">
-                  <p><strong>Resultado del analisis</strong></p>
+                  <p><strong>Resultado del análisis</strong></p>
                   <p id="analysis-summary"></p>
                   <p id="analysis-best"></p>
                   <p><strong>Paso a paso</strong></p>
                   <pre id="analysis-steps"></pre>
                   <details>
-                    <summary>Ver detalle tecnico (candidatos)</summary>
+                    <summary>Ver detalle técnico (candidatos)</summary>
                     <pre id="analysis-candidates"></pre>
                   </details>
                 </div>
@@ -103,21 +105,39 @@
 
         <p id="game-feedback" class="feedback" aria-live="polite"></p>
         <div id="level3-explanation" class="hint hidden">
-          <p>El mensaje estaba oculto en caracteres invisibles Unicode.</p>
-          <p>Cada caracter representaba un bit (0 o 1).</p>
-          <p>Al agruparlos en bytes y convertirlos a ASCII se obtuvo el resultado.</p>
+          <p><strong>Cómo funcionaba internamente (Unicode invisible)</strong></p>
+          <p>Unicode incluye caracteres que no se ven en pantalla, pero siguen existiendo en el texto.</p>
+          <p>En este reto, esos caracteres invisibles representaban bits (0 y 1).</p>
+          <p>Proceso interno:</p>
+          <ol>
+            <li>Extraer caracteres invisibles del texto.</li>
+            <li>Convertirlos a una secuencia binaria.</li>
+            <li>Agrupar en bytes de 8 bits.</li>
+            <li>Traducir cada byte a ASCII.</li>
+          </ol>
+          <p><strong>Binario detectado</strong></p>
+          <textarea id="level3-solution-binary" readonly></textarea>
+          <p><strong>Texto plano con Unicode visible</strong></p>
+          <pre id="level3-unicode-plain"></pre>
+          <p><strong>Conversión byte a ASCII</strong></p>
+          <pre id="level3-solution-steps"></pre>
         </div>
       </article>
+      <section id="completion-box" class="card hidden">
+        <h2>Felicitaciones</h2>
+        <p>Completaste los 5 niveles del taller.</p>
+        <p id="completion-meta" class="mini"></p>
+        <a class="button-link" href="/examen-final">Continuar al Test Final</a>
+      </section>
       <footer class="row row-between">
         <div></div>
         <div class="row">
           <button id="next-btn" type="button" class="hidden" disabled>Siguiente nivel</button>
-          <button id="result-btn" type="button" class="hidden">Ver resultado final</button>
         </div>
       </footer>
     </section>
   </main>
-  <script src="/static/js/navbar.js"></script>
-  <script src="/static/js/game.js"></script>
+  <script src="{{ url_for('static', filename='js/navbar.js', v=asset_version) }}"></script>
+  <script src="{{ url_for('static', filename='js/game.js', v=asset_version) }}"></script>
 </body>
 </html>

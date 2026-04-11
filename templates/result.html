@@ -1,17 +1,17 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Taller de Esteganografia - Resultado</title>
-  <link rel="stylesheet" href="/static/css/styles.css">
+  <title>Taller de Esteganografía - Resultado</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css', v=asset_version) }}">
 </head>
 <body data-page="result" data-nav-key="resultado">
   {% include "_navbar.html" %}
   <main class="shell">
     <section class="card">
       <h1>Resultado Final</h1>
-      <p class="subtitle">Resumen de tu desempeno en los 5 niveles.</p>
+      <p class="subtitle">Resumen de tu desempeño en los 5 niveles.</p>
       <dl id="result-list" class="result-list">
         <div><dt>Nickname</dt><dd id="r-nickname">-</dd></div>
         <div><dt>Tiempo total</dt><dd id="r-time">-</dd></div>
@@ -29,7 +29,7 @@
       </div>
     </section>
   </main>
-  <script src="/static/js/navbar.js"></script>
-  <script src="/static/js/game.js"></script>
+  <script src="{{ url_for('static', filename='js/navbar.js', v=asset_version) }}"></script>
+  <script src="{{ url_for('static', filename='js/game.js', v=asset_version) }}"></script>
 </body>
 </html>

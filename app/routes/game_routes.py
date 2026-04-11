@@ -1,4 +1,4 @@
-import os
+﻿import os
 import re
 import tempfile
 import base64
@@ -50,16 +50,16 @@ LEVELS = get_levels()
 FINAL_EXAM_QUESTIONS = [
     {
         "id": 1,
-        "question": "Cual es la principal diferencia entre esteganografia y criptografia?",
+        "question": "Cual es la principal diferencia entre esteganografía y criptografia?",
         "type": "mcq",
         "options": {
-            "A": "La esteganografia oculta la existencia del mensaje; la criptografia oculta su contenido.",
-            "B": "La criptografia oculta la existencia del mensaje; la esteganografia lo comprime.",
+            "A": "La esteganografía oculta la existencia del mensaje; la criptografia oculta su contenido.",
+            "B": "La criptografia oculta la existencia del mensaje; la esteganografía lo comprime.",
             "C": "Son lo mismo.",
             "D": "Ninguna de las anteriores.",
         },
         "answer": "A",
-        "explanation": "Esteganografia esconde que existe mensaje. Criptografia protege el contenido.",
+        "explanation": "Esteganografía esconde que existe mensaje. Criptografia protege el contenido.",
     },
     {
         "id": 2,
@@ -115,10 +115,10 @@ FINAL_EXAM_QUESTIONS = [
     },
     {
         "id": 6,
-        "question": "Por que PNG suele ser mejor que JPG para LSB?",
+        "question": "Por qué PNG suele ser mejor que JPG para LSB?",
         "type": "mcq",
         "options": {
-            "A": "Porque PNG tiene colores mas brillantes",
+            "A": "Porque PNG tiene colores más brillantes",
             "B": "Porque JPG es sin perdida",
             "C": "Porque PNG evita compresion con perdida que puede romper bits ocultos",
             "D": "Porque PNG solo tiene canal rojo",
@@ -167,7 +167,7 @@ FINAL_EXAM_QUESTIONS = [
     },
     {
         "id": 10,
-        "question": "Uso comun de esteganografia en ciberseguridad:",
+        "question": "Uso comun de esteganografía en ciberseguridad:",
         "type": "mcq",
         "options": {
             "A": "Ocultar datos para evadir inspeccion basica",
@@ -176,7 +176,7 @@ FINAL_EXAM_QUESTIONS = [
             "D": "Corregir errores de red",
         },
         "answer": "A",
-        "explanation": "Puede usarse para ocultar informacion en contenido aparentemente normal.",
+        "explanation": "Puede usarse para ocultar información en contenido aparentemente normal.",
     },
 ]
 
@@ -217,6 +217,16 @@ def _success_response(payload=None):
     if payload:
         data.update(payload)
     return jsonify(data)
+
+
+def _validation_status_es(code):
+    mapping = {
+        "VALID": "Válido",
+        "INVALID: not enough data": "Inválido: no hay suficientes datos ocultos (minimo 8 bits).",
+        "INVALID: incomplete bytes": "Inválido: los bits ocultos no completan bytes de 8 bits.",
+        "INVALID: missing terminator": "Inválido: falta el terminador del mensaje oculto.",
+    }
+    return mapping.get(code, "Estado desconocido")
 
 
 def _sanitize_nickname(value):
@@ -366,7 +376,6 @@ def final_exam_page():
             started_at = exam_state.get("started_at") or session_data.get("start_time", now)
             submitted_at = exam_state.get("submitted_at") or now
             exam_elapsed = round(max(0, submitted_at - started_at), 2)
-            session_elapsed = round(max(0, submitted_at - session_data.get("start_time", now)), 2)
             correct_count = int(exam_state.get("score", 0))
             return render_template(
                 "final_test.html",
@@ -376,7 +385,6 @@ def final_exam_page():
                 exam_metrics={
                     "nickname": session_data.get("nickname", ""),
                     "exam_time": exam_elapsed,
-                    "total_time": session_elapsed,
                     "correct": correct_count,
                     "incorrect": 10 - correct_count,
                 },
@@ -413,7 +421,6 @@ def final_exam_page():
     started_at = exam_state.get("started_at") or now
     submitted_at = exam_state.get("submitted_at") or time.time()
     exam_elapsed = round(max(0, submitted_at - started_at), 2) if exam_state.get("submitted") else 0
-    session_elapsed = round(max(0, submitted_at - session_data.get("start_time", now)), 2) if exam_state.get("submitted") else 0
     correct_count = int(exam_state.get("score", 0)) if exam_state.get("submitted") else 0
 
     return render_template(
@@ -424,7 +431,6 @@ def final_exam_page():
         exam_metrics={
             "nickname": session_data.get("nickname", ""),
             "exam_time": exam_elapsed,
-            "total_time": session_elapsed,
             "correct": correct_count,
             "incorrect": 10 - correct_count,
         },
@@ -437,14 +443,14 @@ def start_session():
     data = request.get_json(silent=True) or {}
     nickname = _sanitize_nickname(data.get("nickname", ""))
     if not nickname:
-        return _error_response(400, "invalid_nickname", "Debes ingresar un nickname valido.")
+        return _error_response(400, "invalid_nickname", "Debes ingresar un nickname válido.")
 
     session_id = create_session(nickname)
     session["session_id"] = session_id
 
     return _success_response(
         {
-            "message": "Sesion iniciada.",
+            "message": "Sesión iniciada.",
             "nickname": nickname,
             "current_level": 1,
             "max_level": 5,
@@ -456,7 +462,7 @@ def start_session():
 def state():
     _, session_data = _get_active_session()
     if not session_data:
-        return _error_response(401, "missing_session", "No hay una sesion activa.")
+        return _error_response(401, "missing_session", "No hay una sesión activa.")
     return _success_response({"state": get_state_payload(session_data)})
 
 
@@ -464,7 +470,7 @@ def state():
 def get_level(level_id):
     _, session_data = _get_active_session()
     if not session_data:
-        return _error_response(401, "missing_session", "No hay una sesion activa.")
+        return _error_response(401, "missing_session", "No hay una sesión activa.")
 
     level = LEVELS.get(level_id)
     if not level:
@@ -512,7 +518,7 @@ def get_level(level_id):
 def submit_answer():
     _, session_data = _get_active_session()
     if not session_data:
-        return _error_response(401, "missing_session", "No hay una sesion activa.")
+        return _error_response(401, "missing_session", "No hay una sesión activa.")
 
     data = request.get_json(silent=True) or {}
     level_id = int(data.get("level_id", 0))
@@ -530,11 +536,11 @@ def submit_answer():
 
     if not can_access_level(session_data, level_id):
         return _error_response(
-            403, "level_locked", "No puedes responder este nivel todavia."
+            403, "level_locked", "No puedes responder este nivel todavía."
         )
 
     if not user_answer:
-        return _error_response(400, "empty_answer", "La respuesta no puede estar vacia.")
+        return _error_response(400, "empty_answer", "La respuesta no puede estar vacía.")
 
     expected_answer = LEVELS[level_id]["expected_answer"]
     step_id = int(data.get("step_id", 1))
@@ -555,7 +561,7 @@ def submit_answer():
                 "No puedes saltar retos. Completa el reto actual primero.",
             )
         if step_id < 1 or step_id > len(steps):
-            return _error_response(400, "invalid_step", "Reto no valido.")
+            return _error_response(400, "invalid_step", "Reto no válido.")
 
         step_info = steps[step_id - 1]
         if step_info.get("decoder") == "indexed_letters":
@@ -624,7 +630,7 @@ def submit_answer():
 def upload_image():
     _, session_data = _get_active_session()
     if not session_data:
-        return _error_response(401, "missing_session", "No hay una sesion activa.")
+        return _error_response(401, "missing_session", "No hay una sesión activa.")
 
     level_id = int(request.form.get("level_id", 0))
     if level_id not in (4, 5):
@@ -632,7 +638,7 @@ def upload_image():
 
     if not can_access_level(session_data, level_id):
         return _error_response(
-            403, "level_locked", "No puedes responder este nivel todavia."
+            403, "level_locked", "No puedes responder este nivel todavía."
         )
     existing_attempt = session_data.get("answers", {}).get(str(level_id))
     already_solved = bool(existing_attempt and existing_attempt.get("correct"))
@@ -642,7 +648,7 @@ def upload_image():
         return _error_response(
             400,
             "invalid_image",
-            "Archivo invalido. Formatos permitidos: png, jpg, jpeg, bmp, gif, webp, tif, tiff.",
+            "Archivo inválido. Formatos permitidos: png, jpg, jpeg, bmp, gif, webp, tif, tiff.",
         )
 
     filename = secure_filename(file.filename)
@@ -675,12 +681,12 @@ def upload_image():
             "correct": is_correct,
             "answer_locked": already_solved,
             "feedback": (
-                "Analisis realizado. Este nivel ya estaba resuelto; la validacion permanece bloqueada."
+                "Análisis realizado. Este nivel ya estaba resuelto; la validacion permanece bloqueada."
                 if already_solved
                 else (
                     "Imagen correcta. Mensaje decodificado con exito."
                     if is_correct
-                    else "Mensaje decodificado, pero no coincide con la solucion esperada."
+                    else "Mensaje decodificado, pero no coincide con la solución esperada."
                 )
             ),
             "current_level": session_data["current_level"],
@@ -694,7 +700,7 @@ def upload_image():
 def answer_image_manual():
     _, session_data = _get_active_session()
     if not session_data:
-        return _error_response(401, "missing_session", "No hay una sesion activa.")
+        return _error_response(401, "missing_session", "No hay una sesión activa.")
 
     data = request.get_json(silent=True) or {}
     level_id = int(data.get("level_id", 0))
@@ -704,7 +710,7 @@ def answer_image_manual():
         return _error_response(400, "invalid_level", "Este endpoint solo aplica a niveles 4 y 5.")
 
     if not can_access_level(session_data, level_id):
-        return _error_response(403, "level_locked", "No puedes responder este nivel todavia.")
+        return _error_response(403, "level_locked", "No puedes responder este nivel todavía.")
     existing_attempt = session_data.get("answers", {}).get(str(level_id))
     if existing_attempt and existing_attempt.get("correct"):
         return _error_response(
@@ -714,7 +720,7 @@ def answer_image_manual():
         )
 
     if not user_answer:
-        return _error_response(400, "empty_answer", "La respuesta no puede estar vacia.")
+        return _error_response(400, "empty_answer", "La respuesta no puede estar vacía.")
 
     expected = LEVELS[level_id]["expected_answer"]
     is_correct = validate_answer(user_answer, expected)
@@ -741,7 +747,7 @@ def answer_image_manual():
 def result():
     _, session_data = _get_active_session()
     if not session_data:
-        return _error_response(401, "missing_session", "No hay una sesion activa.")
+        return _error_response(401, "missing_session", "No hay una sesión activa.")
 
     if not session_data["completed"]:
         return _error_response(
@@ -760,11 +766,17 @@ def lab_encode_zero_width():
         encoded = encode_message(secret, cover)
     except ValueError as exc:
         return _error_response(400, "invalid_secret", str(exc))
+    validation = validate_encoded_text(encoded)
+    advice = ""
+    if cover and len(secret) > max(4, len(cover)):
+        advice = "Sugerencia: el mensaje oculto es largo para el texto base. Usa un texto visible más extenso para disimular mejor."
     return _success_response(
         {
             "encoded_text": encoded,
-            "validation": validate_encoded_text(encoded),
+            "validation": validation,
+            "validation_message": _validation_status_es(validation),
             "bits": debug_zero_width(encoded),
+            "advice": advice,
         }
     )
 
@@ -774,10 +786,12 @@ def lab_decode_zero_width():
     data = request.get_json(silent=True) or {}
     text = data.get("text", "")
     if not has_invisible(text):
+        validation = "INVALID: not enough data"
         return _success_response(
             {
                 "decoded_message": "",
-                "validation": "INVALID: not enough data",
+                "validation": validation,
+                "validation_message": _validation_status_es(validation),
                 "bits": "",
                 "warning": "El texto puede haber perdido caracteres invisibles durante copiar/pegar.",
                 "message": "No se detectó un mensaje oculto.",
@@ -789,7 +803,9 @@ def lab_decode_zero_width():
     details = decode_with_details(text)
     decoded = details["decoded"]
     validation = validate_encoded_text(text)
-    if validation == "VALID" and not details.get("terminated", False):
+    if validation != "VALID":
+        decoded = ""
+    elif not details.get("terminated", False):
         validation = "INVALID: missing terminator"
         decoded = ""
     warning = (
@@ -801,6 +817,7 @@ def lab_decode_zero_width():
         {
             "decoded_message": decoded,
             "validation": validation,
+            "validation_message": _validation_status_es(validation),
             "bits": details["binary"],
             "warning": warning,
             "invisible_count": len(details["binary"]),
@@ -815,9 +832,11 @@ def lab_decode_zero_width():
 def lab_validate_zero_width():
     data = request.get_json(silent=True) or {}
     text = data.get("text", "")
+    validation = validate_encoded_text(text)
     return _success_response(
         {
-            "validation": validate_encoded_text(text),
+            "validation": validation,
+            "validation_message": _validation_status_es(validation),
             "bits": debug_zero_width(text),
         }
     )
@@ -830,11 +849,13 @@ def lab_debug_zero_width():
     codepoints = debug_codepoints(text)
     for cp in codepoints:
         print(cp)
+    validation = validate_encoded_text(text)
     return _success_response(
         {
             "codepoints": codepoints,
             "bits": debug_zero_width(text),
-            "validation": validate_encoded_text(text),
+            "validation": validation,
+            "validation_message": _validation_status_es(validation),
         }
     )
 
@@ -849,7 +870,7 @@ def lab_embed_image_lsb():
         return _error_response(
             400,
             "invalid_image",
-            "Archivo invalido. Formatos permitidos: png, jpg, jpeg, bmp, gif, webp, tif, tiff.",
+            "Archivo inválido. Formatos permitidos: png, jpg, jpeg, bmp, gif, webp, tif, tiff.",
         )
     if not secret:
         return _error_response(400, "empty_secret", "Debes ingresar un mensaje para ocultar.")
@@ -900,7 +921,7 @@ def lab_analyze_image():
         return _error_response(
             400,
             "invalid_image",
-            "Archivo invalido. Formatos permitidos: png, jpg, jpeg, bmp, gif, webp, tif, tiff.",
+            "Archivo inválido. Formatos permitidos: png, jpg, jpeg, bmp, gif, webp, tif, tiff.",
         )
 
     filename = secure_filename(file.filename)
