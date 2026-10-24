@@ -1,6 +1,6 @@
 # Aula Abierta · Laboratorio de Burp Suite
 
-Plataforma de cursos ficticia con seis desafíos de seguridad web, pistas y tablero de banderas. No requiere paquetes externos, cuentas reales ni pagos.
+Plataforma de cursos ficticia con seis desafíos de seguridad web y tablero de banderas. No requiere paquetes externos, cuentas reales ni pagos.
 
 ## Iniciar
 
@@ -23,9 +23,9 @@ Cuenta de práctica: **alumno / burp123**. Usá solamente datos ficticios en el 
 5. Enviá una petición a Repeater, modificá un dato y compará las respuestas.
 6. Pegá las banderas `FLAG{…}` en Laboratorio. Cada una vale 100 puntos.
 
-Los seis desafíos están en el tablero, con pistas opcionales. No necesitás el escáner de pago. Las banderas se generan en el servidor y son específicas de cada sesión. Conservá la cookie `sid` al usar Repeater. Una bandera de otro navegador no suma puntos.
+El tablero muestra seis hallazgos numerados, sin títulos reveladores ni pistas. Los mensajes de la interfaz no muestran banderas: buscá el encabezado `X-Lab-Flag` en las respuestas HTTP con Burp. No se incluyen banderas en el HTML ni en los cuerpos JSON. No necesitás el escáner de pago. Las banderas se generan en el servidor y son específicas de cada sesión. Conservá la cookie `sid` al usar Repeater. Una bandera de otro navegador no suma puntos.
 
-En el reto de registro, el campo de confirmación no se compara ni en el navegador ni en el servidor. Probá dos contraseñas distintas y observá la petición y la respuesta con Burp. El certificado 1001 es un dato de muestra del alumno, incluso si creás otro usuario.
+El certificado 1001 es un dato de muestra del alumno, incluso si creás otro usuario.
 
 El progreso se guarda en memoria del servidor por navegador; no se asocia a una cuenta. Las cuentas creadas, banderas e inscripciones se pierden cuando el proceso se reinicia. En un hosting que suspenda el servicio también puede reiniciarse el práctico. Mantener una sola instancia evita que las sesiones se dividan entre procesos.
 

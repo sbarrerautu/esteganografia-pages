@@ -14,20 +14,22 @@ export function createLab() {
   insert.run('admin', hash(randomBytes(24).toString('hex')), 'admin');
   insert.run('alumno', hash('burp123'), 'student');
   const secret = randomBytes(32), sessions = new Map();
-  const challenges = [
-    { id: 'backup', title: 'Un archivo fuera de lugar', area: 'Exploración', level: 'Inicial', hint: '¿Qué rutas le pide el sitio a los buscadores que no visiten? Revisá /robots.txt.' },
-    { id: 'certificado', title: 'Ese diploma no es tuyo', area: 'Mis certificados', level: 'Inicial', hint: 'Tu certificado tiene un identificador numérico. Probá otro en Repeater y compará el propietario.' },
-    { id: 'precio', title: 'Una oferta demasiado buena', area: 'Inscripción a cursos', level: 'Inicial', hint: 'Interceptá una inscripción. ¿El servidor toma el precio del catálogo o acepta el enviado por el navegador?' },
-    { id: 'rol', title: 'De alumno a administrador', area: 'Administración', level: 'Intermedio', hint: 'El panel exige un rol. Revisá las cookies enviadas en la petición.' },
-    { id: 'acceso', title: 'La puerta de atrás', area: 'Inicio de sesión', level: 'Intermedio', hint: 'Probá una comilla en el usuario. ¿Cómo se construye la consulta SQL de acceso?' },
-    { id: 'registro', title: 'La confirmación de adorno', area: 'Crear cuenta', level: 'Inicial', hint: '¿El campo de confirmación cumple su función? Probá registrar una cuenta con dos contraseñas distintas y observá la respuesta en Burp.' },
-  ];
+  const challenges = ['backup', 'certificado', 'precio', 'rol', 'acceso', 'registro'].map(id => ({ id }));
   const courses = [
     { id: 'burp', title: 'Burp Suite desde cero', category: 'SEGURIDAD WEB', price: 49, lessons: 8, duration: '2 h 30 min', level: 'Inicial', art: 'proxy', color: 'mint', description: 'Del primer clic al primer hallazgo. Entendé qué viaja entre tu navegador y la web.' },
     { id: 'http', title: 'El idioma de la web', category: 'FUNDAMENTOS', price: 29, lessons: 6, duration: '1 h 45 min', level: 'Inicial', art: 'http', color: 'blue', description: 'Peticiones, respuestas, cookies y los detalles que marcan la diferencia.' },
     { id: 'security', title: 'Pensar como un auditor', category: 'PRÁCTICA GUIADA', price: 39, lessons: 5, duration: '2 h', level: 'Intermedio', art: 'audit', color: 'peach', description: 'Aprendé a hacer buenas preguntas y a comprobar lo que una aplicación da por hecho.' },
   ];
   const send = (res, status, value, type = 'application/json; charset=utf-8') => {
+    // Las banderas viajan únicamente en encabezados HTTP, nunca en el contenido visible.
+    if (value && typeof value === 'object' && !Array.isArray(value) && !Buffer.isBuffer(value)) {
+      value = { ...value };
+      for (const key of ['flag', 'verification']) {
+        if (typeof value[key] === 'string' && value[key].startsWith('FLAG{')) {
+          res.setHeader('X-Lab-Flag', value[key]); delete value[key];
+        }
+      }
+    }
     res.writeHead(status, { 'Content-Type': type, 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' });
     res.end(type.startsWith('application/json') ? JSON.stringify(value) : value);
   };
@@ -54,15 +56,14 @@ export function createLab() {
       }
       const session = sessions.get(sid); session.touched = Date.now();
       const flag = id => `FLAG{${id}_${createHmac('sha256', secret).update(`${sid}:${id}`).digest('hex').slice(0, 18)}}`;
-      if (req.method === 'GET' && url.pathname === '/api/state') return send(res, 200, { challenges: challenges.map(({ hint, ...c }) => ({ ...c, points: 100, solved: session.solved.has(c.id) })), score: session.solved.size * 100, user: session.user, enrolled: [...session.enrolled] });
+      if (req.method === 'GET' && url.pathname === '/api/state') return send(res, 200, { challenges: challenges.map((c, index) => ({ id: `reto-${index + 1}`, title: `Desafío ${index + 1}`, points: 100, solved: session.solved.has(c.id) })), score: session.solved.size * 100, user: session.user, enrolled: [...session.enrolled] });
       if (req.method === 'GET' && url.pathname === '/api/courses') return send(res, 200, courses);
-      if (req.method === 'GET' && url.pathname.startsWith('/api/hint/')) { const c = challenges.find(c => c.id === url.pathname.split('/').pop()); return send(res, c ? 200 : 404, c ? { hint: c.hint } : { error: 'Reto desconocido.' }); }
       if (req.method === 'POST' && url.pathname === '/api/flags') {
         const data = await body(req), submitted = Buffer.from(String(data.flag || '').trim());
         const c = challenges.find(c => { const expected = Buffer.from(flag(c.id)); return expected.length === submitted.length && timingSafeEqual(expected, submitted); });
         if (!c) return send(res, 400, { error: 'Bandera incorrecta o de otra sesión. Copiá el valor completo: FLAG{…}.' });
         const duplicate = session.solved.has(c.id); session.solved.add(c.id);
-        return send(res, 200, { message: duplicate ? 'Ya capturaste esta bandera.' : `¡Bandera capturada! +100 puntos · ${c.title}`, score: session.solved.size * 100, id: c.id });
+        return send(res, 200, { message: duplicate ? 'Ya capturaste esta bandera.' : '¡Bandera capturada! +100 puntos.', score: session.solved.size * 100, id: `reto-${challenges.indexOf(c) + 1}` });
       }
       if (req.method === 'POST' && url.pathname === '/api/reset') { session.solved.clear(); session.enrolled.clear(); session.user = 'alumno'; res.setHeader('Set-Cookie', 'role=student; SameSite=Lax; Path=/'); return send(res, 200, { message: 'Tu progreso se reinició.' }); }
       if (req.method === 'POST' && url.pathname === '/api/login') {
@@ -102,7 +103,7 @@ export function createLab() {
       if (req.method === 'GET' && url.pathname === '/robots.txt') return send(res, 200, 'User-agent: *\nDisallow: /backups/\n', 'text/plain; charset=utf-8');
       // RETO 1: copia de respaldo expuesta con datos ficticios.
       if (req.method === 'GET' && url.pathname === '/backups/') return send(res, 200, '<!doctype html><html lang="es"><meta charset="utf-8"><title>Backups</title><h1>Index of /backups/</h1><a href="/backups/campus-demo.bak">campus-demo.bak</a></html>', 'text/html; charset=utf-8');
-      if (req.method === 'GET' && url.pathname === '/backups/campus-demo.bak') return send(res, 200, `# Aula Abierta · respaldo de demostración\nENV=classroom\nINTERNAL_FLAG=${flag('backup')}\n`, 'text/plain; charset=utf-8');
+      if (req.method === 'GET' && url.pathname === '/backups/campus-demo.bak') { res.setHeader('X-Lab-Flag', flag('backup')); return send(res, 200, `# Aula Abierta · respaldo de demostración\nENV=classroom\nCAMPUS=Aula Abierta\n`, 'text/plain; charset=utf-8'); }
       if (req.method === 'GET' && url.pathname === '/api/video') { const exists = await stat(videoPath).then(s => s.isFile()).catch(() => false); return send(res, 200, { available: exists, url: exists ? '/media/intro.mp4' : null }); }
       if (req.method === 'GET' && url.pathname === '/media/intro.mp4') {
         const info = await stat(videoPath).catch(() => null); if (!info) return send(res, 404, { error: 'Video pendiente de publicación.' });
@@ -129,4 +130,5 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === fileURLToPath(pathToFi
   const server = createLab(); server.on('error', e => { console.error(`No se pudo iniciar: ${e.message}`); process.exitCode = 1; });
   server.listen(port, host, () => console.log(`Aula Abierta lista en http://${host}:${port}\nLaboratorio educativo · 6 retos · Ctrl+C para detener.`));
 }
+
 
