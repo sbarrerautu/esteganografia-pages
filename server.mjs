@@ -20,7 +20,7 @@ export function createLab() {
     { id: 'precio', title: 'Una oferta demasiado buena', area: 'Inscripción a cursos', level: 'Inicial', hint: 'Interceptá una inscripción. ¿El servidor toma el precio del catálogo o acepta el enviado por el navegador?' },
     { id: 'rol', title: 'De alumno a administrador', area: 'Administración', level: 'Intermedio', hint: 'El panel exige un rol. Revisá las cookies enviadas en la petición.' },
     { id: 'acceso', title: 'La puerta de atrás', area: 'Inicio de sesión', level: 'Intermedio', hint: 'Probá una comilla en el usuario. ¿Cómo se construye la consulta SQL de acceso?' },
-    { id: 'registro', title: 'La confirmación de adorno', area: 'Crear cuenta', level: 'Inicial', hint: 'El navegador compara las contraseñas. Interceptá un registro válido y cambiá solo passwordConfirm antes de enviarlo.' },
+    { id: 'registro', title: 'La confirmación de adorno', area: 'Crear cuenta', level: 'Inicial', hint: '¿El campo de confirmación cumple su función? Probá registrar una cuenta con dos contraseñas distintas y observá la respuesta en Burp.' },
   ];
   const courses = [
     { id: 'burp', title: 'Burp Suite desde cero', category: 'SEGURIDAD WEB', price: 49, lessons: 8, duration: '2 h 30 min', level: 'Inicial', art: 'proxy', color: 'mint', description: 'Del primer clic al primer hallazgo. Entendé qué viaja entre tu navegador y la web.' },
@@ -129,3 +129,4 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === fileURLToPath(pathToFi
   const server = createLab(); server.on('error', e => { console.error(`No se pudo iniciar: ${e.message}`); process.exitCode = 1; });
   server.listen(port, host, () => console.log(`Aula Abierta lista en http://${host}:${port}\nLaboratorio educativo · 6 retos · Ctrl+C para detener.`));
 }
+

@@ -25,7 +25,7 @@ Cuenta de práctica: **alumno / burp123**. Usá solamente datos ficticios en el 
 
 Los seis desafíos están en el tablero, con pistas opcionales. No necesitás el escáner de pago. Las banderas se generan en el servidor y son específicas de cada sesión. Conservá la cookie `sid` al usar Repeater. Una bandera de otro navegador no suma puntos.
 
-El registro compara las contraseñas en el navegador: para investigar la validación del servidor, interceptá un envío válido y cambiá la confirmación. El certificado 1001 es un dato de muestra del alumno, incluso si creás otro usuario.
+En el reto de registro, el campo de confirmación no se compara ni en el navegador ni en el servidor. Probá dos contraseñas distintas y observá la petición y la respuesta con Burp. El certificado 1001 es un dato de muestra del alumno, incluso si creás otro usuario.
 
 El progreso se guarda en memoria del servidor por navegador; no se asocia a una cuenta. Las cuentas creadas, banderas e inscripciones se pierden cuando el proceso se reinicia. En un hosting que suspenda el servicio también puede reiniciarse el práctico. Mantener una sola instancia evita que las sesiones se dividan entre procesos.
 
@@ -62,3 +62,4 @@ Referencia del proveedor: https://render.com/docs/node-version y https://render.
 ## Para quien organiza
 
 El solucionario y las pruebas están en `docente/`, que no se sirve por HTTP. El ZIP para alumnos excluye esa carpeta. Si los alumnos reciben el código, pueden leer la implementación: para evaluar descubrimiento sin spoilers, compartí la URL del campus y la guía, no el código del servidor.
+
