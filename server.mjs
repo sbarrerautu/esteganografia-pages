@@ -130,7 +130,12 @@ export function createLab() {
       }
       if (req.method === 'POST' && url.pathname === '/api/register') {
         const data = await body(req);
-        if (typeof data.username !== 'string' || !/^[a-zA-Z0-9_.-]{3,24}$/.test(data.username) || typeof data.password !== 'string' || data.password.length < 8 || data.password.length > 128 || typeof data.passwordConfirm !== 'string') return send(res, 400, { error: 'Usuario: 3 a 24 letras, números, puntos o guiones. Contraseña: 8 a 128 caracteres. Se requieren ambos campos.' });
+        if (typeof data.username !== 'string') return send(res, 400, { error: 'Escribí un nombre de usuario.', field: 'username' });
+        data.username = data.username.trim();
+        if (data.username.length < 3 || data.username.length > 24) return send(res, 400, { error: 'El usuario debe tener entre 3 y 24 caracteres. Ejemplo: equipo_01.', field: 'username' });
+        if (!/^[a-zA-Z0-9_.-]+$/.test(data.username)) return send(res, 400, { error: 'El usuario no admite espacios, tildes ni @. Usá letras A-Z, números, punto, guion o guion bajo. Ejemplo: equipo_01.', field: 'username' });
+        if (typeof data.password !== 'string' || data.password.length < 8 || data.password.length > 128) return send(res, 400, { error: 'La primera contraseña debe tener entre 8 y 128 caracteres.', field: 'password' });
+        if (typeof data.passwordConfirm !== 'string') return send(res, 400, { error: 'Falta el campo de confirmación en la petición.', field: 'passwordConfirm' });
         if (db.prepare('SELECT id FROM users WHERE username=?').get(data.username)) return send(res, 409, { error: 'Ese usuario ya existe. Elegí otro.' });
         if (db.prepare('SELECT count(*) AS n FROM users').get().n >= 2000) return send(res, 503, { error: 'Límite de cuentas alcanzado.' });
         // RETO 6: falta la comparación de passwordConfirm en el servidor.
