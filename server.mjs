@@ -113,7 +113,13 @@ export function createLab() {
         const duplicate = session.solved.has(c.id); session.solved.add(c.id);
         return send(res, 200, { message: duplicate ? 'Ya capturaste esta bandera.' : '¡Bandera capturada! +100 puntos.', score: session.solved.size * 100, id: `reto-${challenges.indexOf(c) + 1}` });
       }
-      if (req.method === 'POST' && url.pathname === '/api/reset') { session.solved.clear(); session.enrolled.clear(); session.user = 'alumno'; res.setHeader('Set-Cookie', 'role=student; SameSite=Lax; Path=/'); return send(res, 200, { message: 'Tu progreso se reinició.' }); }
+      if (req.method === 'POST' && url.pathname === '/api/reset') { session.solved.clear(); session.enrolled.clear(); res.setHeader('Set-Cookie', 'role=student; SameSite=Lax; Path=/'); return send(res, 200, { message: 'Tu progreso se reinició.' }); }
+      if (req.method === 'POST' && url.pathname === '/api/logout') {
+        session.user = null;
+        const secure = process.env.COOKIE_SECURE === 'true' ? '; Secure' : '';
+        res.setHeader('Set-Cookie', 'role=student; SameSite=Lax; Path=/' + secure);
+        return send(res, 200, { message: 'Sesión cerrada.' });
+      }
       if (req.method === 'POST' && url.pathname === '/api/login') {
         const data = await body(req);
         if (typeof data.username !== 'string' || typeof data.password !== 'string' || data.password.length > 128) return send(res, 400, { error: 'Usuario o contraseña inválidos.' });

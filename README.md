@@ -12,7 +12,7 @@ npm start
 
 Entrá a http://127.0.0.1:3000. En Windows también podés ejecutar `iniciar.cmd`. Detené el servidor con Ctrl+C. El servidor escucha solamente en tu equipo por defecto.
 
-Cuenta de práctica: **alumno / burp123**. Usá solamente datos ficticios en el registro.
+Cuenta de práctica: **alumno / burp123**. El botón **Cerrar sesión**, junto al nombre de usuario, permite salir y luego entrar con otra cuenta desde **Ingresar**. Cerrar sesión conserva las banderas de este navegador; el botón del tablero permite reiniciarlas. Usá solamente datos ficticios en el registro.
 
 ## El práctico
 
