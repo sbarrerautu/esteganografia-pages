@@ -1,0 +1,12 @@
+{
+  "name": "aula-abierta-lab",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Campus educativo con seis retos de Burp Suite",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "start": "node server.mjs"
+  }
+}
