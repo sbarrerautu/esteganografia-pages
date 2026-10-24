@@ -23,7 +23,7 @@ Cuenta de práctica: **alumno / burp123**. Usá solamente datos ficticios en el 
 5. Enviá una petición a Repeater, modificá un dato y compará las respuestas.
 6. Pegá las banderas `FLAG{…}` en Laboratorio. Cada una vale 100 puntos.
 
-El tablero muestra seis hallazgos numerados, sin títulos reveladores ni pistas. Los mensajes de la interfaz no muestran banderas: buscá el encabezado `X-Lab-Flag` en las respuestas HTTP con Burp. No se incluyen banderas en el HTML ni en los cuerpos JSON. No necesitás el escáner de pago. Las banderas se generan en el servidor y son específicas de cada sesión. Conservá la cookie `sid` al usar Repeater. Una bandera de otro navegador no suma puntos.
+El tablero muestra seis desafíos con título, punto de partida y pistas opcionales. Cada pista permanece oculta hasta pulsar «Necesito una pista». Los mensajes de la interfaz no muestran banderas: buscá el encabezado `X-Lab-Flag` en las respuestas HTTP con Burp. No se incluyen banderas en el HTML ni en los cuerpos JSON. No necesitás el escáner de pago. Las banderas se generan en el servidor y son específicas de cada sesión. Conservá la cookie `sid` al usar Repeater. Una bandera de otro navegador no suma puntos.
 
 El certificado 1001 es un dato de muestra del alumno, incluso si creás otro usuario.
 

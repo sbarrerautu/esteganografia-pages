@@ -14,7 +14,50 @@ export function createLab() {
   insert.run('admin', hash(randomBytes(24).toString('hex')), 'admin');
   insert.run('alumno', hash('burp123'), 'student');
   const secret = randomBytes(32), sessions = new Map();
-  const challenges = ['backup', 'certificado', 'precio', 'rol', 'acceso', 'registro'].map(id => ({ id }));
+  const challenges = [
+  {
+    "id": "backup",
+    "title": "Un archivo fuera de lugar",
+    "area": "Exploración",
+    "level": "Inicial",
+    "hint": "Algunos archivos indican a los buscadores qué rutas no deberían visitar. ¿Esas rutas están realmente protegidas?"
+  },
+  {
+    "id": "certificado",
+    "title": "Ese diploma no es tuyo",
+    "area": "Mis certificados",
+    "level": "Inicial",
+    "hint": "Tu certificado tiene un identificador numérico. ¿El servidor comprueba a quién pertenece cada certificado?"
+  },
+  {
+    "id": "precio",
+    "title": "Una oferta demasiado buena",
+    "area": "Inscripción a cursos",
+    "level": "Inicial",
+    "hint": "Observá la petición de inscripción. ¿Quién decide el precio final: el navegador o el servidor?"
+  },
+  {
+    "id": "rol",
+    "title": "De alumno a administrador",
+    "area": "Administración",
+    "level": "Intermedio",
+    "hint": "Revisá qué información sobre permisos envía el navegador al pedir acceso al panel."
+  },
+  {
+    "id": "acceso",
+    "title": "La puerta de atrás",
+    "area": "Inicio de sesión",
+    "level": "Intermedio",
+    "hint": "Una comilla puede darte una pista sobre cómo se procesa el usuario. Compará la respuesta HTTP con la de un intento normal."
+  },
+  {
+    "id": "registro",
+    "title": "La confirmación de adorno",
+    "area": "Crear cuenta",
+    "level": "Inicial",
+    "hint": "¿El campo de confirmación cumple su función? Probá dos contraseñas distintas y observá los encabezados de la respuesta con Burp."
+  }
+];
   const courses = [
     { id: 'burp', title: 'Burp Suite desde cero', category: 'SEGURIDAD WEB', price: 49, lessons: 8, duration: '2 h 30 min', level: 'Inicial', art: 'proxy', color: 'mint', description: 'Del primer clic al primer hallazgo. Entendé qué viaja entre tu navegador y la web.' },
     { id: 'http', title: 'El idioma de la web', category: 'FUNDAMENTOS', price: 29, lessons: 6, duration: '1 h 45 min', level: 'Inicial', art: 'http', color: 'blue', description: 'Peticiones, respuestas, cookies y los detalles que marcan la diferencia.' },
@@ -56,8 +99,13 @@ export function createLab() {
       }
       const session = sessions.get(sid); session.touched = Date.now();
       const flag = id => `FLAG{${id}_${createHmac('sha256', secret).update(`${sid}:${id}`).digest('hex').slice(0, 18)}}`;
-      if (req.method === 'GET' && url.pathname === '/api/state') return send(res, 200, { challenges: challenges.map((c, index) => ({ id: `reto-${index + 1}`, title: `Desafío ${index + 1}`, points: 100, solved: session.solved.has(c.id) })), score: session.solved.size * 100, user: session.user, enrolled: [...session.enrolled] });
+      if (req.method === 'GET' && url.pathname === '/api/state') return send(res, 200, { challenges: challenges.map((c, index) => ({ id: `reto-${index + 1}`, title: c.title, area: c.area, level: c.level, points: 100, solved: session.solved.has(c.id) })), score: session.solved.size * 100, user: session.user, enrolled: [...session.enrolled] });
       if (req.method === 'GET' && url.pathname === '/api/courses') return send(res, 200, courses);
+      if (req.method === 'GET' && url.pathname.startsWith('/api/hint/')) {
+        const match = /^\/api\/hint\/reto-([1-6])$/.exec(url.pathname);
+        const challenge = match ? challenges[Number(match[1]) - 1] : null;
+        return send(res, challenge ? 200 : 404, challenge ? { hint: challenge.hint } : { error: 'Reto desconocido.' });
+      }
       if (req.method === 'POST' && url.pathname === '/api/flags') {
         const data = await body(req), submitted = Buffer.from(String(data.flag || '').trim());
         const c = challenges.find(c => { const expected = Buffer.from(flag(c.id)); return expected.length === submitted.length && timingSafeEqual(expected, submitted); });
