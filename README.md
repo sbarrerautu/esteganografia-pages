@@ -49,8 +49,13 @@ El reproductor aparece tanto en la portada como en Aula práctica. Mientras no s
 - `public/app.js`: páginas, navegación, filtros y comparación.
 - `public/styles.css`: diseño, móvil e impresión.
 - `public/config.js`: video.
+- `public/law-documents.js`: documentos normativos completos para imprimir o descargar desde el editor oficial.
 
 Cada ficha tiene resumen, puntos clave, referencia de artículos, ejemplo, límites y fuente oficial. Las relaciones se revisan con `npm run check`. La tabla comparada se encuentra en `app.js`: actualizarla si cambia el alcance resumido de una norma.
+
+## Imprimir las leyes
+
+En cada ficha, el bloque **Imprimir o guardar la ley completa** abre el documento normativo oficial en otra pestaña, en PDF cuando hay un enlace directo. Allí se imprime o se guarda con los controles del visor o con Ctrl+P. No se ofrece imprimir la ficha resumida. Los documentos originales o ediciones históricas se identifican como tales. El Decreto 44/018 es reservado y no tiene una opción falsa de impresión.
 
 ## Criterios del contenido
 
@@ -62,4 +67,4 @@ Se aclara la distinción entre grooming (art. 277 bis) y difusión íntima (Ley 
 
 ## Entrega y estado
 
-Proyecto preparado para Render. No se publicó ni se modificó ningún servicio existente. Para publicar hace falta conectar un repositorio que contenga estos archivos a una cuenta de Render autorizada.
+Publicado en https://ciberobservatorio-grupo4.onrender.com/index.html desde la rama `codex/ciberobservatorio` del repositorio conectado. Los cambios que se suben a esa rama se despliegan automáticamente en el sitio estático de Render.

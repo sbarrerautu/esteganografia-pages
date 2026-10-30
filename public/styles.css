@@ -7,3 +7,10 @@
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important;animation:none!important}}
 @media print{.edition,.main-nav,.nav-shell,.law-index,.print-button,.filters,.chips,footer,.skip{display:none!important}body{background:white;color:black;font-size:11pt}.wrap{width:100%}.masthead{padding:0 0 20px}.brand{font-size:25px}.detail-layout{display:block}.law-detail .page-head h1,.case-detail .page-head h1{font-size:30pt}.law-card,.analysis-box,.exercise{break-inside:avoid}.law-grid{grid-template-columns:1fr 1fr}.video-shell{max-height:200px}details{display:block}details>*{display:block!important}.law-index{position:static}.source-line a{color:black}.page-head{padding-top:10px}h1,h2,h3{break-after:avoid}a[href^=http]::after{content:' [' attr(href) ']';font-size:8pt;overflow-wrap:anywhere}.law-card a::after{content:none}}
 main:focus{outline:none}
+.law-print{background:var(--soft);padding:23px;margin:0 0 32px;border-left:3px solid var(--blue)}
+.law-print h2{font-size:29px;margin:9px 0 12px}
+.law-print p{font-size:12px;color:#374764;line-height:1.7}
+.law-print-links{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 14px}
+.law-print-links .btn{font-size:11px;text-align:left;white-space:normal}
+.law-print-help{max-width:720px}
+@media print{.law-print{display:none}}

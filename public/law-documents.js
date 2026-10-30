@@ -1,0 +1,19 @@
+// Documentos normativos completos, distintos de las fichas académicas.
+// Se enlaza al editor oficial para imprimir o guardar el propio documento.
+export const lawDocuments = {
+  '20327': {note:'Texto original de la ley, con los tipos penales que incorpora. Para revisar cambios posteriores, consultá también la versión actualizada de IMPO.',links:[['Texto completo original · Ley 20.327','https://www.impo.com.uy/bases/leyes-originales/20327-2024']]},
+  '19580': {links:[['Ley 19.580 completa · IMPO','https://www.impo.com.uy/bases/leyes/19580-2017']]},
+  '277bis': {heading:'Imprimir el artículo completo',links:[['Artículo 277 bis completo · Código Penal','https://www.impo.com.uy/bases/codigo-penal/9155-1933/277_BIS']]},
+  'cibercrimen': {heading:'Imprimir las normas de la institución',note:'Esta ficha reúne varias normas. Elegí el texto legal que necesitás.',links:[['Ley 19.996 · creación de la unidad','https://www.impo.com.uy/bases/leyes/19996-2021'],['Ley 20.212 · modificación','https://www.impo.com.uy/bases/leyes/20212-2023'],['Ley 20.446 · nueva denominación','https://www.impo.com.uy/bases/leyes/20446-2025']]},
+  '20004': {links:[['Ley 20.004 completa · IMPO','https://www.impo.com.uy/bases/leyes/20004-2021'],['Convenio iberoamericano completo · IMPO','https://www.impo.com.uy/bases/leyes-internacional/20004-2021/1']]},
+  '129016': {heading:'Imprimir el decreto',note:'El PDF del Diario Oficial incluye el decreto y otras publicaciones de esa edición. Seleccioná las páginas que correspondan al imprimir.',links:[['Diario Oficial · Decreto 129/016 (PDF)','https://www.impo.com.uy/diariooficial/2016/05/13/documentos.pdf']]},
+  '371020': {heading:'Imprimir el decreto y su anexo',links:[['Decreto 371/020 · IMPO','https://www.impo.com.uy/bases/decretos/371-2020'],['Anexo completo · Política de Defensa Nacional','https://www.impo.com.uy/bases/decretos-originales/371-2020/2']]},
+  '44018': {heading:'Texto reservado',note:'El Decreto 44/018 es reservado. No hay un texto completo público disponible en esta biblioteca para imprimir. La fuente de Agesic acredita su referencia; no es el decreto.',links:[]},
+  'gdpr': {note:'PDF de la publicación original del reglamento en español. Para consultar correcciones y versiones posteriores, usá también la fuente EUR-Lex de esta ficha.',links:[['GDPR completo · publicación oficial (PDF)','https://eur-lex.europa.eu/legal-content/ES/TXT/PDF/?uri=CELEX:32016R0679']]},
+  '9546': {note:'Antecedente histórico derogado. Se abre su texto completo en español.',links:[['Directiva 95/46/CE completa (PDF)','https://eur-lex.europa.eu/legal-content/ES/TXT/PDF/?uri=CELEX:31995L0046']]},
+  'lopdgdd': {note:'PDF del texto consolidado publicado por el BOE.',links:[['LOPDGDD completa · BOE (PDF)','https://www.boe.es/buscar/pdf/2018/BOE-A-2018-16673-consolidado.pdf']]},
+  'pipeda': {note:'Documento oficial en inglés.',links:[['PIPEDA completa · Justice Laws (PDF)','https://laws-lois.justice.gc.ca/PDF/P-8.6.pdf']]},
+  'uk': {note:'PDF original de 2018, en inglés. No incorpora reformas posteriores. Para el texto actualizado, abrí la versión oficial de la ficha y elegí “Print Options”.',links:[['Data Protection Act 2018 completa · original (PDF)','https://www.legislation.gov.uk/ukpga/2018/12/pdfs/ukpga_20180012_en.pdf'],['Versión actualizada · opciones de impresión','https://www.legislation.gov.uk/ukpga/2018/12/contents']]},
+  'privacyact': {note:'Texto de 5 U.S.C. § 552a en la edición 2024 del U.S. Code, en inglés. La fecha de la edición no asegura que incluya cambios posteriores.',links:[['Privacy Act · texto legal completo (PDF)','https://www.govinfo.gov/content/pkg/USCODE-2024-title5/pdf/USCODE-2024-title5-partI-chap5-subchapII-sec552a.pdf']]},
+  '18331': {links:[['Ley 18.331 completa · IMPO','https://www.impo.com.uy/bases/leyes/18331-2008']]}
+};
