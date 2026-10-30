@@ -1,0 +1,10 @@
+import { cp, mkdir, rm } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+import { dirname, resolve } from 'node:path';
+const root = dirname(fileURLToPath(import.meta.url));
+const output = resolve(root, 'dist');
+if (dirname(output) !== root || output === root) throw new Error('Directorio de salida fuera del proyecto');
+await rm(output, { recursive: true, force: true });
+await mkdir(output, { recursive: true });
+await cp(new URL('./public/', import.meta.url), output, { recursive: true });
+console.log('Sitio generado en dist/');

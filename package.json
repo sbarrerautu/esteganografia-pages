@@ -1,0 +1,7 @@
+{
+  "name": "ciberobservatorio-grupo4",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": { "start": "node server.mjs", "build": "node build.mjs", "check": "node --check public/app.js && node --check public/data.js && node verify.mjs" }
+}
