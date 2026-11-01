@@ -25,6 +25,17 @@ assert.ok(!app.includes('window.print('),'No imprimir la ficha en lugar del text
 assert.ok(app.includes('${lawPrintSection(l)}'),'Debe mostrarse el acceso al documento legal en cada ficha');
 for(const match of app.matchAll(/#\/normas\/([a-z0-9]+)/g))assert.ok(ids.has(match[1]),`Enlace fijo roto: ${match[1]}`);
 for(const asset of ['index.html','styles.css','app.js','data.js','config.js','assets/favicon.svg'])await access(new URL('./public/'+asset,import.meta.url));
+const slides = JSON.parse(await readFile(new URL('./public/presentacion/slides.json',import.meta.url),'utf8'));
+assert.equal(slides.length,39,'La presentación debe conservar sus 39 páginas');
+assert.ok((await readFile(new URL('./public/presentacion/presentacion.pdf',import.meta.url))).subarray(0,5).toString()==='%PDF-','El original debe ser un PDF válido');
+for (const [index,slide] of slides.entries()) {
+  assert.equal(slide.number,index+1,'Orden de diapositivas incorrecto');
+  assert.ok(slide.title && slide.text,'Diapositiva sin contenido accesible');
+  assert.match(slide.image,/^presentacion\/diapositiva-\d{2}\.webp$/);
+  await access(new URL('./public/'+slide.image,import.meta.url));
+}
+assert.ok(!app.includes('LA PREGUNTA QUE CONECTA TODA LA EXPOSICIÓN') && !app.includes('HOJA DE RUTA / 60 MINUTOS'),'No mostrar etiquetas internas del plan');
+console.log(`Presentación verificada: ${slides.length} diapositivas y PDF original.`);
 console.log(`Verificado: ${laws.length} fichas, ${cases.length} casos, ${exercises.length} ejercicios; fuentes HTTPS y relaciones internas válidas.`);
 if (video.interactiveSrc) {
   await access(new URL('./public/'+video.interactiveSrc,import.meta.url));
