@@ -18,10 +18,23 @@ for(const l of laws){
   assert.equal(new URL(l.url).protocol,'https:');
   for(const id of l.related) assert.ok(ids.has(id),`Enlace de norma roto: ${id}`);
 }
-for(const c of cases){assert.equal(new URL(c.url).protocol,'https:');for(const id of c.related)assert.ok(ids.has(id));}
+for(const c of cases){
+  assert.equal(new URL(c.url).protocol,'https:');
+  assert.ok(Number.isFinite(Date.parse(c.iso)),`Fecha de caso no válida: ${c.id}`);
+  for(const field of ['title','summary','what','how','law','outcome','source','prompt'])assert.ok(c[field],`Falta ${field} en ${c.id}`);
+  for(const id of c.related)assert.ok(ids.has(id));
+  for(const ref of c.extraSources||[])assert.equal(new URL(ref.url).protocol,'https:');
+  for(const rule of c.legal||[]){
+    assert.ok(ids.has(rule.lawId),`Norma de análisis inexistente: ${rule.lawId}`);
+    assert.ok(rule.articles&&rule.explanation,`Análisis jurídico incompleto: ${c.id}`);
+    for(const ref of rule.references||[])assert.equal(new URL(ref.url).protocol,'https:');
+  }
+}
 for(const e of exercises){assert.ok(e.questions.length&&e.answer);for(const id of e.laws)assert.ok(ids.has(id));}
 const app=await readFile(new URL('./public/app.js',import.meta.url),'utf8');
 assert.ok(!app.includes('window.print('),'No imprimir la ficha en lugar del texto legal');
+assert.ok(!app.includes('Materiales del curso'),'No mostrar la sección retirada de materiales');
+assert.ok(!cases.some(c=>c.id==='cursor'),'El caso Cursor fue excluido por pedido del usuario');
 assert.ok(app.includes('${lawPrintSection(l)}'),'Debe mostrarse el acceso al documento legal en cada ficha');
 for(const match of app.matchAll(/#\/normas\/([a-z0-9]+)/g))assert.ok(ids.has(match[1]),`Enlace fijo roto: ${match[1]}`);
 for(const asset of ['index.html','styles.css','app.js','data.js','config.js','assets/favicon.svg'])await access(new URL('./public/'+asset,import.meta.url));

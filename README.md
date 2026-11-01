@@ -65,6 +65,8 @@ En cada ficha, el bloque **Imprimir o guardar la ley completa** abre el document
 
 ## Criterios del contenido
 
+La sección Fuentes y equipo identifica a Sandra Barrera y Matias Bardo como alumnos, a Nelson Connio como profesor y a Gestión Seguridad de la Información como materia. Se retiraron los enlaces a materiales del curso. La selección de cinco casos incluye Binance (comunicado del 30/10/2026 sobre el incidente del 29/10) y Bybit (aviso del FBI del 26/02/2025 y cronología de la empresa). Sus fichas separan hechos y atribuciones de una comparación jurídica condicionada a competencia, datos afectados y prueba. El caso Cursor no se incorporó. Los nuevos registros y referencias están en `public/recent-cases.js`.
+
 Revisión: 30/10/2026. Se usó el plan PDF aportado para la secuencia de exposición de 60 minutos. La carpeta de Drive del curso y la subcarpeta Punto 4 están enlazadas en Fuentes; en esta última se observaron los PDF del GDPR y la Directiva 95/46/CE. Los textos legales se enlazan a fuentes oficiales; no se descargaron ni redistribuyeron todos los PDF de Drive.
 
 La portada es una selección editorial de comunicados de 2025–2026, no noticias que se actualicen automáticamente. Cada caso distingue fecha del comunicado, mecanismo conocido, información afectada y decisión oficial o posible marco de análisis. No se asegura el estado procesal posterior de una sanción.

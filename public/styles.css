@@ -43,5 +43,22 @@ main:focus{outline:none}
 .presentation-viewer:fullscreen .presentation-image img{object-fit:contain}
 .presentation-viewer:fullscreen .presentation-count{color:#adc2ff}
 .presentation-viewer:fullscreen .presentation-toolbar,.presentation-viewer:fullscreen .presentation-controls{border-color:#ffffff30;flex-shrink:0}
+.team-credits dl{margin:20px 0 0}
+.team-credits dl>div{padding:13px 0;border-bottom:1px solid var(--line)}
+.team-credits dt{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--blue);margin-bottom:5px}
+.team-credits dd{font-size:15px;margin:0;line-height:1.7}
+.footer-credits small{display:block;font-size:10px;line-height:1.8;color:#b6c2d7;margin-top:7px}
+.case-status{font-size:9px;line-height:1.4;color:#435779;margin-top:9px}
+.case-law-analysis{margin:35px 0}
+.case-law-analysis>h2{font-size:32px}
+.case-law-context{font-size:12px;color:var(--muted);margin:15px 0 25px}
+.case-law-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.case-law-card{border:1px solid var(--line);padding:24px;background:white}
+.case-law-card .kicker{font-size:9px;letter-spacing:.8px;line-height:1.7}
+.case-law-card h3{font-size:26px;margin:12px 0}
+.case-law-card p{font-size:13px;color:var(--muted)}
+.case-law-card .related{margin:17px 0 12px}
+.case-law-references a{display:block;font-size:10px;color:var(--blue);margin:7px 0}
+@media(max-width:650px){.case-law-grid{grid-template-columns:1fr}.case-law-card{padding:20px}.case-law-analysis>h2{font-size:29px}}
 @media(max-width:600px){.presentation-toolbar{padding:12px;gap:10px}.presentation-actions{gap:6px}.presentation-actions a,.presentation-actions button{font-size:9px;padding:7px}.presentation-controls{flex-wrap:wrap;gap:10px;padding:12px}.presentation-controls button{font-size:11px;padding:9px 12px}.slide-picker{order:-1;flex-basis:100%}.presentation-controls button:last-child{margin-left:auto}.presentation-help{font-size:10px}}
 @media print{.law-print{display:none}}
