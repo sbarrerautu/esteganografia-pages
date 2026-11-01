@@ -36,6 +36,10 @@ Referencia oficial de configuración: https://render.com/docs/blueprint-spec
 
 ## Agregar el video del grupo
 
+La experiencia **Un clic. Varias consecuencias.** ya está integrada desde `public/un-clic/index.html`, en la portada y en Aula práctica. Conserva los cuatro capítulos, sus decisiones, clips, música y subtítulos del ZIP proporcionado. También se puede abrir en otra pestaña desde el reproductor. Los archivos de esta experiencia están en `public/un-clic/` y se copian al build con el resto del sitio.
+
+Para reemplazarla más adelante por un único MP4, dejar `interactiveSrc: ''` en `public/config.js` y seguir estos pasos:
+
 1. Copiar el MP4 a `public/assets/practica.mp4`.
 2. En `public/config.js` cambiar `src: ''` por `src: 'assets/practica.mp4'`.
 3. Opcional: añadir subtítulos WebVTT y completar `captions: 'assets/subtitulos.vtt'`.

@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import { readFile, access } from 'node:fs/promises';
 import { laws, cases, exercises } from './public/data.js';
 import { lawDocuments } from './public/law-documents.js';
+import { video } from './public/config.js';
+import vm from 'node:vm';
 const ids = new Set(laws.map(l=>l.id));
 assert.equal(ids.size,laws.length,'IDs de normas duplicados');
 assert.equal(laws.length,15,'La biblioteca debe tener las 15 fichas previstas');
@@ -24,3 +26,21 @@ assert.ok(app.includes('${lawPrintSection(l)}'),'Debe mostrarse el acceso al doc
 for(const match of app.matchAll(/#\/normas\/([a-z0-9]+)/g))assert.ok(ids.has(match[1]),`Enlace fijo roto: ${match[1]}`);
 for(const asset of ['index.html','styles.css','app.js','data.js','config.js','assets/favicon.svg'])await access(new URL('./public/'+asset,import.meta.url));
 console.log(`Verificado: ${laws.length} fichas, ${cases.length} casos, ${exercises.length} ejercicios; fuentes HTTPS y relaciones internas válidas.`);
+if (video.interactiveSrc) {
+  await access(new URL('./public/'+video.interactiveSrc,import.meta.url));
+  const context = { window: {} };
+  vm.runInNewContext(await readFile(new URL('./public/un-clic/story.js',import.meta.url),'utf8'), context, {timeout:1000});
+  const story = context.window.STORY;
+  for (const file of [...Object.values(story.clips), ...Object.values(story.music)]) {
+    assert.ok(/^(clips|music)\/[\w.-]+\.(mp4|mp3)$/.test(file),`Ruta de medio no válida: ${file}`);
+    await access(new URL('./public/un-clic/'+file,import.meta.url));
+  }
+  for (const chapter of story.chapters) assert.ok(story.nodes[chapter.start],`Inicio de capítulo inexistente: ${chapter.id}`);
+  for (const node of Object.values(story.nodes)) {
+    assert.ok(story.clips[node.id],`Falta video para ${node.id}`);
+    for (const next of node.choices ? node.choices.map(c=>c.next) : [node.next]) {
+      assert.ok(next.startsWith('ficha:') ? story.fichas[next.slice(6)] : story.nodes[next],`Destino inexistente: ${next}`);
+    }
+  }
+  console.log(`Experiencia verificada: ${story.chapters.length} capítulos y ${Object.keys(story.clips).length} clips, con archivos y destinos completos.`);
+}

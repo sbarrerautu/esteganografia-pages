@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Un clic, varias consecuencias</title>
+  <meta name="description" content="Video interactivo sobre ciberdelito, ciberdefensa y privacidad internacional. Grupo 4 · Gestión de Seguridad de la Información." />
+  <link rel="stylesheet" href="player.css?v=mvy6lvoi" />
+</head>
+<body>
+  <main id="stage" aria-live="polite">
+    <div id="videos"></div>
+    <div id="slate" hidden></div>
+    <div id="subs" aria-hidden="true"></div>
+
+    <section id="gate" class="panel" hidden>
+      <div class="gate-inner">
+        <p class="kicker">Grupo 4 · Ciberdelito, Ciberdefensa y Privacidad Internacional</p>
+        <h1>Un clic.<br /><em>Varias consecuencias.</em></h1>
+        <p class="lede">Cuatro historias. Ustedes deciden qué pasa.</p>
+        <div class="gate-actions">
+          <button id="btn-show" class="primary">Comenzar <span class="key">Enter</span></button>
+          <button id="btn-chapters" class="ghost">Capítulos</button>
+          <button id="btn-sources" class="ghost">Fuentes</button>
+        </div>
+        <p class="hint">Teclas: <b>1</b>/<b>2</b> eligen · <b>Espacio</b> pausa o continúa · <b>C</b> subtítulos · <b>M</b> música · <b>F</b> pantalla completa</p>
+      </div>
+    </section>
+
+    <section id="chapters" class="panel" hidden>
+      <h2>Capítulos</h2>
+      <div id="chapter-list" class="chapter-list"></div>
+      <button class="ghost" data-close>Volver</button>
+    </section>
+
+    <section id="warning" class="panel card-panel" hidden>
+      <div class="card">
+        <p class="kicker">Aviso de contenido</p>
+        <p id="warning-text" class="big"></p>
+        <button class="primary" data-continue>Continuar <span class="key">Espacio</span></button>
+      </div>
+    </section>
+
+    <section id="decision" hidden>
+      <div class="question"><span id="question"></span></div>
+      <div class="choices">
+        <button class="choice" data-key="A"><span class="num">1</span><span class="label"></span></button>
+        <button class="choice" data-key="B"><span class="num">2</span><span class="label"></span></button>
+      </div>
+      <p class="confirm-hint" id="confirm-hint" hidden>Presioná de nuevo para confirmar</p>
+    </section>
+
+    <section id="ficha" class="panel card-panel" hidden>
+      <div class="card ficha">
+        <p class="kicker" id="ficha-kicker"></p>
+        <h2 id="ficha-title"></h2>
+        <ul id="ficha-lines"></ul>
+        <div id="ficha-links" class="links"></div>
+        <button class="primary" data-continue>Continuar <span class="key">Espacio</span></button>
+      </div>
+    </section>
+
+    <section id="end" class="panel" hidden>
+      <div class="end-inner">
+        <h1>Un clic.<br /><em>Varias consecuencias.</em></h1>
+        <h3>El recorrido que eligieron</h3>
+        <ol id="route"></ol>
+        <p id="credits" class="credits"></p>
+        <div class="gate-actions">
+          <button class="primary" id="btn-restart">Volver al inicio</button>
+          <button class="ghost" id="btn-sources-end">Fuentes</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="sources" class="panel" hidden>
+      <h2>Fuentes oficiales</h2>
+      <ul id="source-list" class="source-list"></ul>
+      <button class="ghost" data-close>Volver</button>
+    </section>
+
+    <div id="hud">
+      <div id="dots"></div>
+      <div id="toast" hidden></div>
+    </div>
+  </main>
+  <script src="story.js?v=mvy6lvoi"></script>
+  <script src="engine.js?v=mvy6lvoi"></script>
+  <script src="ui.js?v=mvy6lvoi"></script>
+</body>
+</html>

@@ -13,4 +13,9 @@ main:focus{outline:none}
 .law-print-links{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 14px}
 .law-print-links .btn{font-size:11px;text-align:left;white-space:normal}
 .law-print-help{max-width:720px}
+.interactive-shell{aspect-ratio:16/9;background:#0b0d18;overflow:hidden}
+.interactive-shell iframe{display:block;width:100%;height:100%;border:0}
+.interactive-hint{font-size:11px;color:var(--muted);line-height:1.7;margin-top:8px}
+.interactive-video .video-caption{flex-wrap:wrap}
+.interactive-video .video-caption a{color:var(--blue);font-weight:600}
 @media print{.law-print{display:none}}
