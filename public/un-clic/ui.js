@@ -213,7 +213,7 @@
   function onState(s) {
     body.classList.toggle('holding', s.kind !== 'clip');
     dots(s.chapter);
-    if (s.kind === 'gate') { only('#gate'); setMusic(null); $('#btn-show').focus(); return; }
+    if (s.kind === 'gate') { only('#gate'); setMusic(null); if (window.self === window.top) $('#btn-show').focus(); return; }
     if (s.kind === 'warning') { only('#warning'); $('#warning-text').textContent = s.text; setMusic(s.chapter, true); return; }
     if (s.kind === 'clip') {
       only(null);
