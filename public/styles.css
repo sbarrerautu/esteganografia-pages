@@ -78,5 +78,13 @@ main:focus{outline:none}
 @media(max-width:1100px){.news-hero{gap:28px}.news-hero .lead{padding-right:28px}.home-cases-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.home-cases-grid .case-tile:first-child{grid-column:1/-1}}
 @media(max-width:900px){.home-aula{grid-template-columns:minmax(0,1fr);gap:24px}.home-aula .aula-aside{padding:20px 0 0;border-left:0;border-top:1px solid var(--line)}}
 @media(max-width:760px){.news-hero{grid-template-columns:minmax(0,1fr);gap:24px;padding-top:24px}.news-hero .lead{padding-right:0;border-right:0}.news-hero .lead h1{font-size:clamp(40px,8vw,54px)}.news-hero .hero-visual{min-height:300px}.news-hero .hero-visual svg{height:220px}.home-cases-grid{grid-template-columns:minmax(0,1fr);gap:18px}.home-cases-grid .case-tile:first-child{grid-column:auto}.home-cases-grid .case-tile:first-child h3{font-size:30px}.home-cases-grid .case-tile h3{font-size:27px}.home-cases-grid .case-tile{padding:22px}}
+.case-resolution{margin:35px 0;padding:28px;background:var(--soft);border-top:3px solid var(--blue)}
+.case-resolution h2{font-size:32px;line-height:1.2;margin:12px 0 20px}
+.case-resolution .answer-conclusion{font-size:17px;font-weight:700;line-height:1.6;color:#163c9c;margin-bottom:18px}
+.case-resolution .answer-explanation{font-size:14px;line-height:1.8;color:#344258;margin-top:13px}
+.answer-references{border-top:1px solid #c8d3ea;padding-top:16px;margin-top:22px;font-size:10px}
+.answer-references strong{display:block;letter-spacing:.5px;margin-bottom:8px}
+.answer-references a{display:block;color:var(--blue);font-size:11px;line-height:1.6;margin:7px 0;overflow-wrap:anywhere}
+@media(max-width:650px){.case-resolution{padding:22px}.case-resolution h2{font-size:27px}.case-resolution .answer-conclusion{font-size:16px}}
 @media(max-width:600px){.presentation-toolbar{padding:12px;gap:10px}.presentation-actions{gap:6px}.presentation-actions a,.presentation-actions button{font-size:9px;padding:7px}.presentation-controls{flex-wrap:wrap;gap:10px;padding:12px}.presentation-controls button{font-size:11px;padding:9px 12px}.slide-picker{order:-1;flex-basis:100%}.presentation-controls button:last-child{margin-left:auto}.presentation-help{font-size:10px}}
 @media print{.law-print{display:none}}

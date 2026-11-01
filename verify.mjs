@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile, access } from 'node:fs/promises';
 import { laws, cases, exercises } from './public/data.js';
 import { lawDocuments } from './public/law-documents.js';
+import { caseAnswers } from './public/case-answers.js';
 import { video } from './public/config.js';
 import vm from 'node:vm';
 const ids = new Set(laws.map(l=>l.id));
@@ -19,6 +20,9 @@ for(const l of laws){
   for(const id of l.related) assert.ok(ids.has(id),`Enlace de norma roto: ${id}`);
 }
 for(const c of cases){
+  assert.ok(caseAnswers[c.id]?.conclusion,`Falta respuesta para el caso ${c.id}`);
+  assert.ok(caseAnswers[c.id].paragraphs.length&&caseAnswers[c.id].references.length,`Respuesta sin fundamento: ${c.id}`);
+  for(const ref of caseAnswers[c.id].references)assert.equal(new URL(ref.url).protocol,'https:');
   assert.equal(new URL(c.url).protocol,'https:');
   assert.ok(Number.isFinite(Date.parse(c.iso)),`Fecha de caso no válida: ${c.id}`);
   for(const field of ['title','summary','what','how','law','outcome','source','prompt'])assert.ok(c[field],`Falta ${field} en ${c.id}`);
