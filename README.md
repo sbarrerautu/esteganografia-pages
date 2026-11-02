@@ -49,7 +49,7 @@ El reproductor aparece tanto en la portada como en Aula práctica. Mientras no s
 
 ## Editar contenido
 
-La pestaña **Presentación** contiene el PDF aportado por el grupo, con sus 39 páginas, navegación, selección de diapositiva, texto accesible y pantalla completa. El original se conserva en `public/presentacion/presentacion.pdf`, junto con las imágenes renderizadas y `slides.json`. El visor está en `public/presentation-viewer.js`. Para reemplazar el material, copiar el nuevo PDF y ejecutar `prepare-presentation.py` con Python, pypdf, pypdfium2 y Pillow. Render solo publica los archivos generados y no necesita Python para construir el sitio.
+La pestaña **Presentación** contiene el PDF aportado por el grupo, con sus 28 páginas, navegación, selección de diapositiva, texto accesible y pantalla completa. El original se conserva en `public/presentacion/presentacion.pdf`, junto con las imágenes renderizadas y `slides.json`. El visor está en `public/presentation-viewer.js`. Para reemplazar el material, copiar el nuevo PDF y ejecutar `prepare-presentation.py` con Python, pypdf, pypdfium2 y Pillow. Render solo publica los archivos generados y no necesita Python para construir el sitio.
 
 - `public/data.js`: fichas legales, fuentes, casos documentados y escenarios hipotéticos.
 - `public/app.js`: páginas, navegación, filtros y comparación.

@@ -43,7 +43,7 @@ assert.ok(app.includes('${lawPrintSection(l)}'),'Debe mostrarse el acceso al doc
 for(const match of app.matchAll(/#\/normas\/([a-z0-9]+)/g))assert.ok(ids.has(match[1]),`Enlace fijo roto: ${match[1]}`);
 for(const asset of ['index.html','styles.css','app.js','data.js','config.js','assets/favicon.svg'])await access(new URL('./public/'+asset,import.meta.url));
 const slides = JSON.parse(await readFile(new URL('./public/presentacion/slides.json',import.meta.url),'utf8'));
-assert.equal(slides.length,39,'La presentación debe conservar sus 39 páginas');
+assert.equal(slides.length,28,'La presentación debe conservar sus 28 páginas');
 assert.ok((await readFile(new URL('./public/presentacion/presentacion.pdf',import.meta.url))).subarray(0,5).toString()==='%PDF-','El original debe ser un PDF válido');
 for (const [index,slide] of slides.entries()) {
   assert.equal(slide.number,index+1,'Orden de diapositivas incorrecto');

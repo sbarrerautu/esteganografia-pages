@@ -1,7 +1,7 @@
 import { laws, cases, exercises, reviewed } from './data.js?v=20261101-7';
 import { video } from './config.js?v=20261101-3';
 import { lawDocuments } from './law-documents.js';
-import { presentationMarkup, setupPresentation } from './presentation-viewer.js?v=20261101-6';
+import { presentationMarkup, setupPresentation } from './presentation-viewer.js?v=20261102-12';
 import { caseAnswers } from './case-answers.js?v=20261101-11';
 const main = document.querySelector('main');
 const esc = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
