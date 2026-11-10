@@ -112,3 +112,31 @@ main:focus{outline:none}
 .theory-section[hidden],.theory-card[hidden],.theory-empty[hidden]{display:none}
 @media(max-width:800px){.theory-tools{grid-template-columns:1fr 1fr}.theory-tools .btn{grid-column:1/-1}}
 @media(max-width:550px){.theory-tools{grid-template-columns:1fr;padding:20px}.theory-definitions{grid-template-columns:1fr}.theory-heading{flex-wrap:wrap;gap:8px}.theory-heading h2{font-size:25px}.theory-topic-count{flex-basis:100%;padding-left:25px}.theory-card{padding:20px}}
+
+/* Preferencia de apariencia */
+:root{color-scheme:light}
+.edition .wrap{align-items:center;gap:12px}
+.edition-actions{display:flex;align-items:center;gap:22px}
+.theme-toggle{display:inline-flex;align-items:center;gap:8px;min-height:36px;padding:6px 12px;border:1px solid #8290a8;border-radius:4px;background:#1d293d;color:#fff;font-size:11px;line-height:1.4;letter-spacing:0;white-space:nowrap}
+.theme-toggle[hidden]{display:none}
+.theme-toggle:hover{background:#304462}
+.theme-toggle:focus-visible{outline-color:#b9ccff}
+@media(max-width:650px){.edition-location{display:none}.edition{letter-spacing:.5px}.edition-actions{gap:0}.theme-toggle{padding:6px 9px}}
+@media screen{
+  :root[data-theme=dark]{color-scheme:dark;--blue:#98b7ff;--ink:#e6ecf6;--muted:#afbbce;--line:#36445b;--paper:#101722;--soft:#1b2940;--surface:#172131;--action:#2450c6}
+  [data-theme=dark] .edition,[data-theme=dark] footer{background:#090f19}
+  [data-theme=dark] .nav-shell{box-shadow:0 1px 0 var(--line)}
+  [data-theme=dark] .skip,[data-theme=dark] .filters input,[data-theme=dark] .filters select,[data-theme=dark] .law-card,[data-theme=dark] .related a,[data-theme=dark] table,[data-theme=dark] .print-button,[data-theme=dark] .presentation-viewer,[data-theme=dark] .presentation-actions a,[data-theme=dark] .presentation-actions button,[data-theme=dark] .slide-picker select,[data-theme=dark] .case-law-card,[data-theme=dark] .theory-tools input,[data-theme=dark] .theory-tools select,[data-theme=dark] .theory-card{background:var(--surface);color:var(--ink);border-color:var(--line)}
+  [data-theme=dark] .btn,[data-theme=dark] .topline strong,[data-theme=dark] .chip[aria-pressed=true],[data-theme=dark] .law-index a[aria-current=page],[data-theme=dark] th,[data-theme=dark] .discussion,[data-theme=dark] .presentation-controls button{background:var(--action);color:white}
+  [data-theme=dark] .btn:hover{background:#1d42a6}
+  [data-theme=dark] .btn-light{background:transparent;color:var(--ink);border-color:var(--line)}
+  [data-theme=dark] .btn-light:hover,[data-theme=dark] tbody tr:hover{background:var(--soft)}
+  [data-theme=dark] .hero-visual,[data-theme=dark] .brand-symbol{background:#1246db}
+  [data-theme=dark] .status,[data-theme=dark] .meta-row span,[data-theme=dark] .case-status,[data-theme=dark] .case-resolution .answer-conclusion{color:var(--blue)}
+  [data-theme=dark] .note,[data-theme=dark] .law-print p,[data-theme=dark] .case-resolution .answer-explanation{color:var(--muted)}
+  [data-theme=dark] .home-cases-grid .case-tile:first-child,[data-theme=dark] .answer-references{border-color:var(--line)}
+  [data-theme=dark] .presentation-image{background:#0d1424}
+  [data-theme=dark] .presentation-controls button:disabled{background:#28364b;color:#b4bfd0}
+  [data-theme=dark] .presentation-viewer:fullscreen{background:#0d1424}
+}
+@media print{.theme-toggle{display:none!important}}
