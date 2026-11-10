@@ -140,3 +140,17 @@ main:focus{outline:none}
   [data-theme=dark] .presentation-viewer:fullscreen{background:#0d1424}
 }
 @media print{.theme-toggle{display:none!important}}
+
+/* Instituciones y funciones */
+.theory-navigation{display:flex;gap:12px;flex-wrap:wrap;margin:0 0 30px;padding-bottom:20px;border-bottom:1px solid var(--line)}
+.theory-navigation a{padding:10px 16px;border:1px solid var(--line);font-size:13px;font-weight:700;line-height:1.5}
+.theory-navigation a[aria-current=page]{color:var(--blue);background:var(--soft);border-color:var(--blue)}
+.institution-group{margin:36px 0}
+.institution-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.institution-card{padding:26px;border:1px solid var(--line);background:var(--surface,var(--paper));display:flex;flex-direction:column}
+.institution-card h3{font-size:30px;line-height:1.2}
+.institution-card .institution-full-name{font-size:12px;font-weight:700;color:var(--blue);margin:12px 0 18px;line-height:1.6}
+.institution-card p{font-size:14px;line-height:1.8}
+.institution-card a{display:block;font-size:11px;line-height:1.7;color:var(--blue);margin-top:auto;padding-top:22px;overflow-wrap:anywhere}
+.institution-card:last-child:nth-child(odd){grid-column:1/-1}
+@media(max-width:650px){.institution-grid{grid-template-columns:1fr}.institution-card{padding:22px}.institution-card h3{font-size:27px}.theory-navigation a{flex:1;text-align:center}}

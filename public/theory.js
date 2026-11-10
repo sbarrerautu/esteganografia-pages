@@ -1,6 +1,35 @@
 import { theoryGroups } from './theory-data.js?v=20261110-13';
+import { institutionGroups } from './institutions-data.js?v=20261110-15';
 
 const quantity = (count, word) => `${count} ${word}${count === 1 ? '' : 's'}`;
+
+function theoryNavigation(institutions = false) {
+  return `<nav class="theory-navigation" aria-label="Apartados de conceptos y teoría">
+    <a href="#/teoria"${institutions ? '' : ' aria-current="page"'}>Definiciones y conceptos</a>
+    <a href="#/teoria/instituciones"${institutions ? ' aria-current="page"' : ''}>Instituciones y funciones</a>
+  </nav>`;
+}
+
+export function institutionsMarkup(esc) {
+  return `<header class="page-head">
+    <div class="kicker">CONCEPTOS Y TEORÍA · INSTITUCIONES DEL URUGUAY</div>
+    <h1>Quién hace qué.</h1>
+    <p>Diez instituciones y órganos para comprender el gobierno digital, la investigación penal y la defensa nacional.</p>
+  </header>
+  ${theoryNavigation(true)}
+  <div class="institution-groups">${institutionGroups.map((group, index) => `
+    <section class="institution-group">
+      <header class="theory-heading"><span class="number">${String(index + 1).padStart(2, '0')}</span><h2>${esc(group.title)}</h2></header>
+      <div class="institution-grid">${group.institutions.map(institution => `
+        <article class="institution-card">
+          <h3>${esc(institution.name)}</h3>
+          <p class="institution-full-name">${esc(institution.fullName)}</p>
+          <p>${esc(institution.description)}</p>
+          <a href="${esc(institution.url)}" target="_blank" rel="noopener noreferrer">${esc(institution.source)} ↗<span class="sr-only"> (nueva pestaña)</span></a>
+        </article>`).join('')}</div>
+    </section>`).join('')}
+  </div>`;
+}
 
 export function theoryMarkup(esc) {
   const total = theoryGroups.reduce((sum, group) => sum + group.terms.length, 0);
@@ -10,6 +39,7 @@ export function theoryMarkup(esc) {
       <h1>Las palabras detrás de los casos.</h1>
       <p>Definiciones para comprender los ataques, la investigación digital, la defensa y la protección de datos.</p>
     </header>
+    ${theoryNavigation()}
     <div class="theory-intro">
       <p><strong>${total} conceptos en ${theoryGroups.length} temas.</strong> Seguí el recorrido completo o buscá una palabra para repasar su significado.</p>
       <p>Material de estudio aportado por el grupo. Las definiciones son generales; los requisitos de cada delito, derecho u obligación se consultan en la norma aplicable.</p>
