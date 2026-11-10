@@ -154,3 +154,4 @@ main:focus{outline:none}
 .institution-card a{display:block;font-size:11px;line-height:1.7;color:var(--blue);margin-top:auto;padding-top:22px;overflow-wrap:anywhere}
 .institution-card:last-child:nth-child(odd){grid-column:1/-1}
 @media(max-width:650px){.institution-grid{grid-template-columns:1fr}.institution-card{padding:22px}.institution-card h3{font-size:27px}.theory-navigation a{flex:1;text-align:center}}
+.theory-downloads{display:flex;align-items:center;flex-wrap:wrap;gap:18px;margin-top:20px}

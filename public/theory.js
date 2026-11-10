@@ -43,7 +43,7 @@ export function theoryMarkup(esc) {
     <div class="theory-intro">
       <p><strong>${total} conceptos en ${theoryGroups.length} temas.</strong> Seguí el recorrido completo o buscá una palabra para repasar su significado.</p>
       <p>Material de estudio aportado por el grupo. Las definiciones son generales; los requisitos de cada delito, derecho u obligación se consultan en la norma aplicable.</p>
-      <a class="text-link" href="#/normas">Consultar la biblioteca de normas ↗</a>
+      <div class="theory-downloads"><a class="btn" href="conceptos.pdf?v=20261110-16" download="Conceptos_Ciberobservatorio_Grupo_4.pdf">Descargar conceptos en PDF ↓</a><a class="text-link" href="#/normas">Consultar la biblioteca de normas ↗</a></div>
     </div>
     <section class="theory-tools" aria-label="Buscar y filtrar conceptos">
       <div><label for="theory-search">Buscar un concepto</label><input id="theory-search" type="search" placeholder="Ej.: phishing, evidencia, consentimiento…" autocomplete="off"></div>
