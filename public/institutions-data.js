@@ -71,7 +71,7 @@ export const institutionGroups = [
       {
         name: 'Consejo de Defensa Nacional',
         fullName: 'CODENA',
-        description: 'Es un órgano de asesoramiento del Presidente de la República en materia de defensa. Analiza amenazas que pueden afectar la soberanía y los intereses nacionales, propone estrategias y coordina acciones que requieren la participación de distintos organismos.',
+        description: 'Es un órgano de asesoramiento del presidente de la República en materia de defensa. Analiza amenazas que pueden afectar la soberanía y los intereses nacionales, propone estrategias y coordina acciones que requieren la participación de distintos organismos.',
         source: 'IMPO · Reglamento del CODENA, artículos 1 y 2',
         url: 'https://www.impo.com.uy/bases/decretos-reglamento/147-2013'
       },

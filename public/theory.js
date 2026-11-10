@@ -1,8 +1,8 @@
-import { theoryGroups } from './theory-data.js?v=20261110-13';
-import { institutionGroups } from './institutions-data.js?v=20261110-15';
+import { theoryGroups } from './theory-data.js?v=20261110-20';
+import { institutionGroups } from './institutions-data.js?v=20261110-20';
 
 const quantity = (count, word) => `${count} ${word}${count === 1 ? '' : 's'}`;
-const downloadLink = '<a class="btn" href="conceptos.pdf?v=20261110-17" download="Conceptos_e_instituciones_Grupo_4.pdf">Descargar conceptos e instituciones en PDF ↓</a>';
+const downloadLink = '<a class="btn" href="conceptos.pdf?v=20261110-20" download="Conceptos_e_instituciones_Grupo_4.pdf">Descargar conceptos e instituciones en PDF ↓</a>';
 
 function theoryNavigation(institutions = false) {
   return `<nav class="theory-navigation" aria-label="Apartados de conceptos y teoría">
@@ -14,7 +14,7 @@ function theoryNavigation(institutions = false) {
 export function institutionsMarkup(esc) {
   return `<header class="page-head">
     <div class="kicker">CONCEPTOS Y TEORÍA · INSTITUCIONES DEL URUGUAY</div>
-    <h1>Quién hace qué.</h1>
+    <h1>¿Quién hace qué?</h1>
     <p>Diez instituciones y órganos para comprender el gobierno digital, la investigación penal y la defensa nacional.</p>
   </header>
   ${theoryNavigation(true)}
@@ -60,7 +60,7 @@ export function theoryMarkup(esc) {
           <dl class="theory-definitions">${group.terms.map(item => `<div class="theory-card"><dt>${esc(item.term)}</dt><dd>${esc(item.definition)}</dd></div>`).join('')}</dl>
         </section>`).join('')}
     </div>
-    <p class="theory-empty" hidden>Sin resultados. Probá con otra palabra o elegí «Todos los temas».</p>`;
+    <p class="theory-empty" hidden>No se encontraron resultados. Probá con otra palabra o elegí «Todos los temas».</p>`;
 }
 
 export function setupTheory() {
