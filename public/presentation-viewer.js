@@ -1,4 +1,4 @@
-const version = '?v=20261110-18';
+const version = '?v=20261110-19';
 
 export function presentationMarkup() {
   return `<header class="page-head"><div class="kicker">PRESENTACIÓN · GRUPO 04</div><h1>Ciberdelito, ciberdefensa y privacidad.</h1><p>Explorá el marco jurídico uruguayo, la cooperación internacional y la protección de datos a través de la presentación completa.</p></header>

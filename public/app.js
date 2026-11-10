@@ -1,7 +1,7 @@
 import { laws, cases, exercises, reviewed } from './data.js?v=20261101-7';
 import { video } from './config.js?v=20261101-3';
 import { lawDocuments } from './law-documents.js';
-import { presentationMarkup, setupPresentation } from './presentation-viewer.js?v=20261110-18';
+import { presentationMarkup, setupPresentation } from './presentation-viewer.js?v=20261110-19';
 import { caseAnswers } from './case-answers.js?v=20261101-11';
 import { theoryMarkup, institutionsMarkup, setupTheory } from './theory.js?v=20261110-17';
 const main = document.querySelector('main');
