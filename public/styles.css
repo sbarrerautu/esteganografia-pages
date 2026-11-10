@@ -88,3 +88,27 @@ main:focus{outline:none}
 @media(max-width:650px){.case-resolution{padding:22px}.case-resolution h2{font-size:27px}.case-resolution .answer-conclusion{font-size:16px}}
 @media(max-width:600px){.presentation-toolbar{padding:12px;gap:10px}.presentation-actions{gap:6px}.presentation-actions a,.presentation-actions button{font-size:9px;padding:7px}.presentation-controls{flex-wrap:wrap;gap:10px;padding:12px}.presentation-controls button{font-size:11px;padding:9px 12px}.slide-picker{order:-1;flex-basis:100%}.presentation-controls button:last-child{margin-left:auto}.presentation-help{font-size:10px}}
 @media print{.law-print{display:none}}
+
+/* Conceptos y teoría */
+.theory-intro{max-width:850px;margin:0 0 30px}
+.theory-intro p{line-height:1.75;margin-bottom:12px}
+.theory-intro p+p{font-size:13px;color:var(--muted)}
+.theory-tools{display:grid;grid-template-columns:1.2fr 1fr auto;gap:18px;align-items:end;background:var(--soft);padding:24px;border-top:3px solid var(--blue)}
+.theory-tools label{display:block;font-size:12px;font-weight:700;margin-bottom:9px}
+.theory-tools input,.theory-tools select{width:100%;min-width:0;min-height:46px;border:1px solid #cbd3e1;background:white;padding:12px;font:inherit;font-size:13px;color:var(--ink);border-radius:0}
+.theory-tools input:focus,.theory-tools select:focus{outline:2px solid var(--blue);outline-offset:2px}
+.theory-tools .btn{min-height:46px}
+.theory-results{font-size:12px;color:var(--muted);padding:17px 0;border-bottom:1px solid var(--line)}
+.theory-section{margin-top:36px}
+.theory-heading{display:flex;gap:14px;align-items:baseline;margin-bottom:18px}
+.theory-heading .number{color:var(--blue);font-size:12px;font-weight:700}
+.theory-heading h2{font-size:27px;line-height:1.2;flex:1}
+.theory-topic-count{font-size:11px;color:var(--muted);white-space:nowrap}
+.theory-definitions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:0}
+.theory-card{padding:23px;border:1px solid var(--line);background:white}
+.theory-card dt{color:var(--blue);font-size:16px;font-weight:700;line-height:1.4;margin-bottom:10px}
+.theory-card dd{font-size:14px;line-height:1.8;margin:0}
+.theory-empty{padding:40px 24px;background:var(--soft);text-align:center}
+.theory-section[hidden],.theory-card[hidden],.theory-empty[hidden]{display:none}
+@media(max-width:800px){.theory-tools{grid-template-columns:1fr 1fr}.theory-tools .btn{grid-column:1/-1}}
+@media(max-width:550px){.theory-tools{grid-template-columns:1fr;padding:20px}.theory-definitions{grid-template-columns:1fr}.theory-heading{flex-wrap:wrap;gap:8px}.theory-heading h2{font-size:25px}.theory-topic-count{flex-basis:100%;padding-left:25px}.theory-card{padding:20px}}
