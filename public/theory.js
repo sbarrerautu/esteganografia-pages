@@ -2,6 +2,7 @@ import { theoryGroups } from './theory-data.js?v=20261110-13';
 import { institutionGroups } from './institutions-data.js?v=20261110-15';
 
 const quantity = (count, word) => `${count} ${word}${count === 1 ? '' : 's'}`;
+const downloadLink = '<a class="btn" href="conceptos.pdf?v=20261110-17" download="Conceptos_e_instituciones_Grupo_4.pdf">Descargar conceptos e instituciones en PDF ↓</a>';
 
 function theoryNavigation(institutions = false) {
   return `<nav class="theory-navigation" aria-label="Apartados de conceptos y teoría">
@@ -17,6 +18,7 @@ export function institutionsMarkup(esc) {
     <p>Diez instituciones y órganos para comprender el gobierno digital, la investigación penal y la defensa nacional.</p>
   </header>
   ${theoryNavigation(true)}
+  <div class="theory-downloads">${downloadLink}</div>
   <div class="institution-groups">${institutionGroups.map((group, index) => `
     <section class="institution-group">
       <header class="theory-heading"><span class="number">${String(index + 1).padStart(2, '0')}</span><h2>${esc(group.title)}</h2></header>
@@ -43,7 +45,7 @@ export function theoryMarkup(esc) {
     <div class="theory-intro">
       <p><strong>${total} conceptos en ${theoryGroups.length} temas.</strong> Seguí el recorrido completo o buscá una palabra para repasar su significado.</p>
       <p>Material de estudio aportado por el grupo. Las definiciones son generales; los requisitos de cada delito, derecho u obligación se consultan en la norma aplicable.</p>
-      <div class="theory-downloads"><a class="btn" href="conceptos.pdf?v=20261110-16" download="Conceptos_Ciberobservatorio_Grupo_4.pdf">Descargar conceptos en PDF ↓</a><a class="text-link" href="#/normas">Consultar la biblioteca de normas ↗</a></div>
+      <div class="theory-downloads">${downloadLink}<a class="text-link" href="#/normas">Consultar la biblioteca de normas ↗</a></div>
     </div>
     <section class="theory-tools" aria-label="Buscar y filtrar conceptos">
       <div><label for="theory-search">Buscar un concepto</label><input id="theory-search" type="search" placeholder="Ej.: phishing, evidencia, consentimiento…" autocomplete="off"></div>
