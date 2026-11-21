@@ -20,7 +20,7 @@ export async function setupExam(esc) {
   }
   if (!root.isConnected) return;
 
-  let settings = { topic: 'all', pool: 'all', count: '20' };
+  let settings = { topic: 'all', pool: 'all', count: 'all' };
   let attempt = [];
   let answers = {};
   let checkedQuestions = new Set();
@@ -67,8 +67,11 @@ export async function setupExam(esc) {
 
   function updateAvailability() {
     const available = availableCount();
-    const requested = settings.count === 'all' ? available : Math.min(Number(settings.count), available);
-    root.querySelector('#exam-available').textContent = `${available} preguntas disponibles. El intento incluirá ${requested}.`;
+    const counts = ['all', ...['10', '20', '30'].filter(value => Number(value) < available)];
+    if (!counts.includes(settings.count)) settings.count = 'all';
+    root.querySelector('#exam-count').innerHTML = counts.map(value => `<option value="${value}"${settings.count === value ? ' selected' : ''}>${value === 'all' ? 'Todas las disponibles' : value}</option>`).join('');
+    const requested = settings.count === 'all' ? available : Number(settings.count);
+    root.querySelector('#exam-available').textContent = `${available} ${available === 1 ? 'pregunta disponible' : 'preguntas disponibles'}. El intento incluirá ${requested}.`;
     root.querySelector('[type=submit]').disabled = available === 0;
   }
 
@@ -78,7 +81,7 @@ export async function setupExam(esc) {
       <form id="exam-config" class="exam-config">
         <div><label for="exam-topic">Tema</label><select id="exam-topic" name="topic"><option value="all">Todos los temas</option>${bank.topics.map(topic => `<option value="${topic.id}"${settings.topic === String(topic.id) ? ' selected' : ''}>${topic.id}. ${esc(topic.title)}</option>`).join('')}</select></div>
         <div><label for="exam-pool">Preguntas</label><select id="exam-pool" name="pool"><option value="all">Todo el banco</option>${Object.entries(poolNames).map(([value, label]) => `<option value="${value}"${settings.pool === value ? ' selected' : ''}>${label}</option>`).join('')}</select></div>
-        <div><label for="exam-count">Cantidad</label><select id="exam-count" name="count">${['10', '20', '30', 'all'].map(value => `<option value="${value}"${settings.count === value ? ' selected' : ''}>${value === 'all' ? 'Todas las disponibles' : value}</option>`).join('')}</select></div>
+        <div><label for="exam-count">Cantidad</label><select id="exam-count" name="count"></select></div>
         <p id="exam-available" role="status" aria-live="polite"></p>
         <button class="btn" type="submit">Comenzar simulación →</button>
       </form>
