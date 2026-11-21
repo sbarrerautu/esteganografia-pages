@@ -4,7 +4,7 @@ import { lawDocuments } from './law-documents.js';
 import { presentationMarkup, setupPresentation } from './presentation-viewer.js?v=20261110-19';
 import { caseAnswers } from './case-answers.js?v=20261101-11';
 import { theoryMarkup, institutionsMarkup, setupTheory } from './theory.js?v=20261110-20';
-import { examMarkup, setupExam } from './exam.js?v=20261121-21';
+import { examMarkup, setupExam } from './exam.js?v=20261121-22';
 const main = document.querySelector('main');
 const esc = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const lawById = id => laws.find(law => law.id === id);

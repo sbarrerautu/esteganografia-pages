@@ -1,11 +1,11 @@
-import { gradeAttempt, selectQuestions } from './exam-core.js?v=20261121-21';
+import { gradeAttempt, gradeQuestion, selectQuestions } from './exam-core.js?v=20261121-21';
 
 const poolNames = { base: 'Banco base', profesor: 'Simulacro del profesor', refuerzo: 'Refuerzo del tema 1' };
 
 export function examMarkup() {
   return `<header class="page-head"><div class="kicker">PRÁCTICA · GESTIÓN SEGURIDAD DE LA INFORMACIÓN</div>
     <h1>Simulación de examen.</h1>
-    <p>Prepará tu evaluación con preguntas de los seis temas. Al terminar, revisá tus respuestas, las explicaciones y sus fuentes.</p>
+    <p>Practicá con preguntas de los seis temas. Comprobá cada respuesta y leé su explicación antes de continuar.</p>
   </header><section id="exam-root" aria-label="Simulación de examen"><p role="status">Cargando banco de preguntas…</p></section>`;
 }
 
@@ -23,6 +23,7 @@ export async function setupExam(esc) {
   let settings = { topic: 'all', pool: 'all', count: '20' };
   let attempt = [];
   let answers = {};
+  let checkedQuestions = new Set();
   let current = 0;
   let stage = 'config';
   const topicName = question => bank.topics.find(topic => topic.id === question.topic).title;
@@ -31,6 +32,26 @@ export async function setupExam(esc) {
     const [label, url] = bank.sources[id];
     return `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(label)} ↗<span class="sr-only"> (nueva pestaña)</span></a>`;
   }).join('');
+
+  function explanationMarkup(question) {
+    return `<div class="exam-explanation"><strong>Por qué</strong><p>${esc(question.explanation)}</p>${question.reviewNote ? `<p class="exam-review-note">${esc(question.reviewNote)}</p>` : ''}<div class="exam-references">${sourceLinks(question)}</div></div>`;
+  }
+
+  function renderFeedback() {
+    const question = attempt[current];
+    const feedback = root.querySelector('#exam-feedback');
+    const selected = answers[question.id] || [];
+    root.querySelector('[data-exam-action="check"]').disabled = selected.length === 0;
+    if (!checkedQuestions.has(question.id)) {
+      feedback.innerHTML = '';
+      return;
+    }
+    const correct = gradeQuestion(question, selected) === 'correct';
+    feedback.innerHTML = `<section class="exam-feedback-panel"><h3 tabindex="-1"><span class="exam-status ${correct ? 'correct' : 'incorrect'}">${correct ? 'Respuesta correcta' : 'Respuesta incorrecta'}</span></h3>
+      <p class="exam-answer-summary"><strong>Tu respuesta:</strong> ${selected.join(', ')}<br><strong>Respuesta correcta:</strong> ${question.correct.join(', ')}</p>
+      <ul class="exam-feedback-answers">${question.options.filter(option => question.correct.includes(option.id)).map(option => `<li><strong>${option.id}.</strong> ${esc(option.text)}</li>`).join('')}</ul>
+      ${explanationMarkup(question)}</section>`;
+  }
 
   function focusHeading() {
     const heading = root.querySelector('[data-exam-heading]');
@@ -61,7 +82,7 @@ export async function setupExam(esc) {
         <p id="exam-available" role="status" aria-live="polite"></p>
         <button class="btn" type="submit">Comenzar simulación →</button>
       </form>
-      <section class="exam-rules"><h2>Cómo se corrige</h2><p>Cada pregunta vale un punto. En selección múltiple debés marcar todas las opciones correctas y ninguna adicional. Las preguntas sin responder valen cero; los errores no descuentan puntos.</p><p>Podés ir y volver entre preguntas. Las respuestas y explicaciones se muestran al finalizar. Si elegís menos preguntas de las disponibles, se seleccionan al azar.</p></section>
+      <section class="exam-rules"><h2>Cómo practicar</h2><p>Elegí tus opciones y pulsá «Comprobar respuesta» para ver la corrección, una breve explicación y sus fuentes. Podés cambiar tu selección y volver a comprobarla antes de continuar.</p><p>Cada pregunta vale un punto. En selección múltiple debés marcar todas las opciones correctas y ninguna adicional. El resumen final usa tu última selección; las preguntas sin responder valen cero y los errores no descuentan puntos.</p><p>Podés ir y volver entre preguntas. Si elegís menos preguntas de las disponibles, se seleccionan al azar.</p></section>
       <details class="exam-audit"><summary>Revisión del banco y ajustes realizados</summary><p>Revisión conceptual con fuentes públicas oficiales y de los autores de los marcos. Fecha: ${esc(bank.reviewed)}. Las referencias históricas y las ediciones estudiadas se identifican en las explicaciones.</p><ul>${bank.reviewNotes.map(note => `<li>${esc(note)}</li>`).join('')}</ul></details>`;
     updateAvailability();
   }
@@ -87,18 +108,21 @@ export async function setupExam(esc) {
           <p id="exam-selection" class="exam-selection">${question.multiple ? 'Selección múltiple: marcá todas las opciones correctas.' : 'Selección única: elegí una opción.'}</p>
           <div class="exam-options" aria-describedby="exam-selection">${question.options.map(option => `<label class="exam-option"><input type="${question.multiple ? 'checkbox' : 'radio'}" name="answer-${question.id}" value="${option.id}" data-exam-answer${selected.includes(option.id) ? ' checked' : ''}><span><strong>${option.id}.</strong> ${esc(option.text)}</span></label>`).join('')}</div>
         </fieldset>
+        <div class="exam-check"><button class="btn" type="button" data-exam-action="check" aria-controls="exam-feedback">Comprobar respuesta</button><p>Elegí tus opciones para comprobarlas. Podés modificarlas y volver a intentar.</p></div>
+        <div id="exam-feedback" aria-live="polite"></div>
       </article>
       <div class="exam-step-actions"><button class="btn btn-light" data-exam-action="previous"${current === 0 ? ' disabled' : ''}>← Anterior</button><button class="btn btn-light" data-exam-action="next"${current === attempt.length - 1 ? ' disabled' : ''}>Siguiente →</button></div>
       <nav class="exam-question-nav" aria-label="Preguntas del intento">${attempt.map((item, index) => `<button type="button" data-exam-index="${index}"${index === current ? ' aria-current="step"' : ''}>${index + 1}</button>`).join('')}</nav>
       <div class="exam-finish"><p>Al finalizar se corrigen también las preguntas que hayas dejado sin responder.</p><button class="btn" data-exam-action="finish">Finalizar y corregir</button></div>`;
     updateProgress();
+    renderFeedback();
   }
 
   function renderResults() {
     stage = 'results';
     const result = gradeAttempt(attempt, answers);
     const statusNames = { correct: 'Correcta', incorrect: 'Incorrecta', unanswered: 'Sin responder' };
-    root.innerHTML = `<section class="exam-summary"><div class="kicker">RESULTADO DEL INTENTO</div><h2 data-exam-heading tabindex="-1">${result.correct} de ${result.total} puntos · ${result.percent}%</h2>
+    root.innerHTML = `<section class="exam-summary"><div class="kicker">RESULTADO DE LA PRÁCTICA · ÚLTIMAS RESPUESTAS</div><h2 data-exam-heading tabindex="-1">${result.correct} de ${result.total} puntos · ${result.percent}%</h2>
       <p>${result.correct} correctas · ${result.incorrect} incorrectas · ${result.unanswered} sin responder</p>
       <button class="btn" data-exam-action="new">Configurar otro intento</button></section>
       <h2 class="exam-review-heading">Revisión de las respuestas</h2>
@@ -106,7 +130,7 @@ export async function setupExam(esc) {
         <h3>${esc(item.question.prompt)}</h3>
         <p class="exam-answer-summary"><strong>Tu respuesta:</strong> ${item.selected.length ? item.selected.join(', ') : 'Sin responder'}<br><strong>Respuesta correcta:</strong> ${item.question.correct.join(', ')}</p>
         <ul class="exam-reviewed-options">${item.question.options.map(option => `<li class="${item.question.correct.includes(option.id) ? 'is-correct' : ''}"><strong>${option.id}.</strong> ${esc(option.text)}${item.question.correct.includes(option.id) ? ' <span class="exam-option-tag">✓ Correcta</span>' : ''}${item.selected.includes(option.id) ? ' <span class="exam-option-tag">Tu elección</span>' : ''}</li>`).join('')}</ul>
-        <div class="exam-explanation"><strong>Por qué</strong><p>${esc(item.question.explanation)}</p>${item.question.reviewNote ? `<p class="exam-review-note">${esc(item.question.reviewNote)}</p>` : ''}<div class="exam-references">${sourceLinks(item.question)}</div></div>
+        ${explanationMarkup(item.question)}
       </article>`).join('')}`;
     focusHeading();
   }
@@ -117,6 +141,7 @@ export async function setupExam(esc) {
     attempt = selectQuestions(bank.questions, settings);
     if (!attempt.length) return;
     answers = {};
+    checkedQuestions = new Set();
     current = 0;
     stage = 'attempt';
     renderQuestion();
@@ -136,7 +161,9 @@ export async function setupExam(esc) {
       if (input.checked) selected.add(input.value);
       else selected.delete(input.value);
       answers[question.id] = [...selected].sort();
+      checkedQuestions.delete(question.id);
       updateProgress();
+      renderFeedback();
     }
   });
 
@@ -147,7 +174,13 @@ export async function setupExam(esc) {
       renderConfig();
       root.querySelector('select').focus();
     } else if (stage === 'attempt') {
-      if (button.dataset.examAction === 'finish') {
+      if (button.dataset.examAction === 'check') {
+        checkedQuestions.add(attempt[current].id);
+        renderFeedback();
+        const heading = root.querySelector('#exam-feedback h3');
+        heading.focus({ preventScroll: true });
+        heading.scrollIntoView({ block: 'center', behavior: 'instant' });
+      } else if (button.dataset.examAction === 'finish') {
         renderResults();
       } else if (button.hasAttribute('data-exam-index') || ['previous', 'next'].includes(button.dataset.examAction)) {
         current = button.hasAttribute('data-exam-index') ? Number(button.dataset.examIndex) : current + (button.dataset.examAction === 'next' ? 1 : -1);

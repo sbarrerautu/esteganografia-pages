@@ -213,3 +213,11 @@ main:focus{outline:none}
 @media(max-width:850px){.exam-config{grid-template-columns:1fr 1fr}.exam-config>div:first-child{grid-column:1/-1}}
 @media(max-width:550px){.exam-config{grid-template-columns:1fr;padding:20px}.exam-question,.exam-review,.exam-summary{padding:20px}.exam-question legend{font-size:26px}.exam-review h3{font-size:25px}.exam-summary h2{font-size:29px}.exam-finish{align-items:stretch;flex-direction:column}.exam-option{padding:13px}}
 @media screen{[data-theme=dark] .exam-status.correct{color:#b3edc8;background:#123a29}[data-theme=dark] .exam-status.incorrect{color:#ffbfb7;background:#482326}[data-theme=dark] .exam-status.unanswered{color:#f4d594;background:#3b301d}}
+.exam-check{margin-top:24px;display:flex;align-items:center;flex-wrap:wrap;gap:14px}
+.exam-check p{font-size:12px;color:var(--muted);flex:1;min-width:180px}
+.exam-check button:disabled{opacity:.5;cursor:default}
+.exam-feedback-panel{margin-top:24px;padding:22px;border:1px solid var(--line);border-top:3px solid var(--blue);background:var(--soft)}
+.exam-feedback-panel h3{line-height:1.5;scroll-margin-top:90px}
+.exam-feedback-answers{padding-left:20px;font-size:14px;line-height:1.8}
+.exam-feedback-answers li{margin:8px 0}
+@media(max-width:550px){.exam-feedback-panel{padding:18px}.exam-check{align-items:stretch;flex-direction:column}}
