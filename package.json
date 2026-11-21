@@ -3,5 +3,5 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "scripts": { "start": "node server.mjs", "build": "node build.mjs", "check": "node --check public/app.js && node --check public/data.js && node verify.mjs" }
+  "scripts": { "start": "node server.mjs", "build": "node build.mjs", "check": "node --check public/app.js && node --check public/data.js && node --check public/exam.js && node verify.mjs && node test-exam.mjs" }
 }
